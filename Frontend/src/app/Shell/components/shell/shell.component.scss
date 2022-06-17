@@ -1,0 +1,34 @@
+.fullHLine {
+    width: 100%;
+    margin-top: 25px;
+  }
+
+.titleContent {
+  position: relative;
+  text-align: left;
+  margin-left: 150px;
+  margin-top: 50px;
+}
+
+.lang-region{
+  position: absolute;
+  left: 50%;
+  margin-top: 5px;
+}
+
+.titleText {
+  padding-left: 50px;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.get-right {
+  position: absolute;
+  right: 15%;
+  margin-top: 5px;
+}
+
+.logout-button {
+  color: "#a1a1a1";
+  margin-left: 20px;
+}

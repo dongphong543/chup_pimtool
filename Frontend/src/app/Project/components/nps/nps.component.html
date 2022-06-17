@@ -1,0 +1,184 @@
+<head>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+  />
+  <script src="https://code.jquery.com/jquery-3.6.0.slim.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+</head>
+
+<div style="width: 87.5%; margin-left: 10%">
+  <form
+    [formGroup]="npsForm"
+    (ngSubmit)="onSubmit()"
+    (click)="setSubmittedFalse()"
+  >
+    <div class="row" style="margin-top: -15px; margin-bottom: 30px">
+      <div class="col-2 border-right">
+        <sidebar></sidebar>
+      </div>
+
+      <div
+        class="col-8 border-bottom"
+        style="margin-top: 50px; margin-left: 50px"
+      >
+        <div>
+          <div class="row border-bottom">
+            <span *ngIf="!nowInEPS" class="gray-title">{{
+              "new-project" | translate
+            }}</span>
+            <span *ngIf="nowInEPS" class="gray-title">{{
+              "edit-project-information" | translate
+            }}</span>
+          </div>
+
+          <div
+            class="row alert alert-danger"
+            role="alert"
+            *ngIf="npsForm.invalid && isSubmitted"
+          >
+            <strong>{{ "missing-field" | translate }}</strong>
+          </div>
+
+          <div class="new-project-row">
+            <span class="label">{{ "project-number" | translate }} </span>
+            <span class="red">*</span>
+            <input
+              class="short-nps-input"
+              type="number"
+              formControlName="pjNum"
+              [ngStyle]="{
+                'border-color':
+                  npsForm.get('pjNum').errors?.existPjNumError && isSubmitted
+                    ? 'red'
+                    : ''
+              }"
+              (click)="changePjNum()"
+              autofocus
+            />
+            <!-- (click)="changePjNum()" -->
+
+            <div
+              class="custom-alert-after-input"
+              *ngIf="
+                npsForm.get('pjNum').errors?.existPjNumError && isSubmitted
+              "
+            >
+              <!-- {{ "pj-num-error" | translate }} -->
+              {{this.broadcastService.msg|async}} 
+              <!-- de reproduce, xoa dong ngif phia tren, uncomment dong msg, comment dong pj-num-error -->
+            </div>
+          </div>
+
+          <div class="new-project-row">
+            <span class="label">{{ "project-name" | translate }} </span>
+            <span class="red">*</span>
+            <input class="long-nps-input" formControlName="name" />
+          </div>
+
+          <div class="new-project-row">
+            <span class="label">{{ "customer" | translate }} </span>
+            <span class="red">*</span>
+            <input class="long-nps-input" formControlName="customer" />
+          </div>
+
+          <div class="new-project-row">
+            <span class="label">{{ "group" | translate }} </span>
+            <span class="red">*</span>
+            <select
+              class="dropdown-box short-nps-select"
+              formControlName="group"
+            >
+              <option
+                *ngFor="let pjL of projectLeaderName$ | async"
+                [value]="pjL.id"
+              >
+                {{ pjL.fullName }}
+              </option>
+            </select>
+          </div>
+
+          <div class="new-project-row">
+            <span>{{ "member" | translate }} </span>
+            <input
+              class="long-nps-input"
+              formControlName="member"
+            />
+
+            <div
+              class="custom-alert-after-input"
+              *ngIf="memberNotFound$ | async as memNotFound"
+            >
+              {{ "pj-num-error" | translate }} {{ memNotFound }}
+            </div>
+          </div>
+
+          <div class="new-project-row">
+            <span class="label">{{ "status" | translate }} </span>
+            <span class="red">*</span>
+            <select
+              class="dropdown-box short-nps-select"
+              formControlName="status"
+            >
+              <option *ngFor="let st of statuses" [value]="st.code">
+                {{ st.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="new-project-row" style="margin-bottom: 50px">
+            <span>
+              <span class="label">{{ "start-date" | translate }} </span>
+              <span class="red">*</span>
+              <input
+                class="short-nps-input"
+                type="date"
+                formControlName="startDate"
+              />
+
+              <span style="margin-left: 410px">
+                <span>{{ "end-date" | translate }} </span>
+                <input
+                  class="short-nps-input"
+                  [ngStyle]="{
+                    'border-color':
+                      npsForm.errors?.dateError && isSubmitted ? 'red' : ''
+                  }"
+                  style="position: relative; margin-left: -140px"
+                  type="date"
+                  formControlName="endDate"
+                />
+              </span>
+            </span>
+            <div
+              class="custom-alert-after-input"
+              *ngIf="npsForm.errors?.dateError && isSubmitted"
+            >
+              {{ "pj-date-error" | translate }}
+              <!-- {{this.broadcastService.msg|async}} -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row button-row">
+      <button
+        class="btn-grad bottom-next-button-right"
+        type="button"
+        routerLink="/"
+      >
+        {{ "cancel" | translate }}
+      </button>
+
+      <button *ngIf="nowInEPS == false" class="btn-grad bottom-button-right" type="submit">
+        {{ "create-project" | translate }}
+      </button>
+      
+      <button *ngIf="nowInEPS == true" class="btn-grad bottom-button-right" type="submit">
+        {{ "edit-project" | translate }}
+      </button>
+
+    </div>
+  </form>
+</div>

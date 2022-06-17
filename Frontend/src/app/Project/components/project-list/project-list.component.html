@@ -1,0 +1,152 @@
+<link
+  href="https://fonts.googleapis.com/icon?family=Material+Icons"
+  rel="stylesheet"
+/>
+
+<div style="width: 80%; margin-left: 10%">
+  <div class="row" style="margin-top: -15px">
+    <div class="col-2 border-right">
+      <sidebar></sidebar>
+    </div>
+
+    <div class="col-9" style="margin-top: 50px; margin-left: 50px">
+      <div class="row border-bottom">
+        <span class="gray-title">{{ "projects-list" | translate }}</span>
+      </div>
+
+      <span style="margin-left: -15px">
+        <span>
+          <form>
+            <input
+              class="text-input"
+              type="text"
+              id="textSelect"
+              placeholder="{{ 'search-placeholder' | translate }}"
+            />
+            <select class="dropdown-box" id="statusSelect">
+              <option value=""></option>
+              <option value="PLA">{{ "planned" | translate }}</option>
+              <option value="NEW">{{ "new" | translate }}</option>
+              <option value="INP">{{ "in-progress" | translate }}</option>
+              <option value="FIN">{{ "finished" | translate }}</option>
+            </select>
+
+            <button class="btn-grad" (click)="searchProject()">
+              {{ "search-project" | translate }}
+            </button>
+
+            <input
+              class="link-small-blue"
+              type="reset"
+              value="{{ 'reset-search' | translate }}"
+              (click)="resetProject()"
+            />
+          </form>
+        </span>
+
+        <div style="background-color: white; margin-left: -15px">
+          <table class="table table-bordered border-bottom">
+            <thead class="thead-white" style="height: 32px">
+              <tr>
+                <th scope="col" style="width: 4%"></th>
+                <th
+                  scope="col"
+                  style="width: 7%"
+                  (click)="sortOn('projectNumber')"
+                >
+                  {{ "number" | translate }}
+                </th>
+                <th scope="col" style="width: 31%">{{ "name" | translate }}</th>
+                <th scope="col" style="width: 14%">
+                  {{ "status" | translate }}
+                </th>
+                <th scope="col" style="width: 22%">
+                  {{ "customer" | translate }}
+                </th>
+                <th scope="col" style="width: 16%">
+                  {{ "start-date" | translate }}
+                </th>
+                <th scope="col" style="width: 6%">
+                  {{ "delete" | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let pj of projects$
+                    | async
+                    | filter: searchText
+                    | filter: searchStatus
+                "
+              >
+                <td>
+                  <input
+                    type="checkbox"
+                    style="width: 15px; height: 15px"
+                    id="{{ pj.projectNumber }}checkbox"
+                    (change)="changedCheckbox(pj.projectNumber)"
+                  />
+                </td>
+                <td>
+                  <a
+                    href="/pim/edit/{{ pj.projectNumber }}"
+                    style="color: #666666"
+                    >{{ pj.projectNumber }}</a
+                  >
+                </td>
+                <td>{{ pj.name }}</td>
+                <td>{{ pj.status }}</td>
+                <td>{{ pj.customer }}</td>
+                <td>{{ pj.startDate | date: "dd.MM.yyyy" }}</td>
+                <td>
+                  <button
+                    class="delete-column-button"
+                    *ngIf="pj.status == 'NEW'"
+                    (click)="deleteProject(pj.projectNumber)"
+                  >
+                    <span class="material-icons"> delete </span>
+                  </button>
+                </td>
+              </tr>
+              <span></span>
+            </tbody>
+          </table>
+
+          <div class="n-item-selected border" *ngIf="checkboxCount > 1">
+            {{ checkboxCount }} items selected
+            <button class="delete-select-item" (click)="deleteCheckedProject()">
+              <div>
+                <span style="padding-right: 10px"> delete selected items </span>
+                <span class="material-icons" style="position: absolute">
+                  delete
+                </span>
+              </div>
+            </button>
+          </div>
+
+          <div class="n-item-selected border" *ngIf="checkboxCount == 1">
+            {{ checkboxCount }} item selected
+            <button class="delete-select-item" (click)="deleteCheckedProject()">
+              <div>
+                <span style="padding-right: 10px"> delete selected item </span>
+                <span class="material-icons" style="position: absolute">
+                  delete
+                </span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <div class="pagination">
+          <a href="">&laquo;</a>
+          <a class="active" href="#">1</a>
+          <a href="#">2</a>
+          <a href="#">3</a>
+          <a href="#">4</a>
+          <a href="#">&raquo;</a>
+        </div>
+      </span>
+    </div>
+  </div>
+</div>

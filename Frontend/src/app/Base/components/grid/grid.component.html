@@ -1,0 +1,93 @@
+<link
+  href="https://fonts.googleapis.com/icon?family=Material+Icons"
+  rel="stylesheet"
+/>
+
+<style>
+  th {
+    font-size: 14pt;
+    font-family: "Segoe UI";
+    font-weight: 400;
+    color: #666666;
+  }
+
+  td {
+    font-size: 14pt;
+    font-family: "Segoe UI";
+    font-weight: 600;
+    color: #666666;
+  }
+
+  table td:nth-child(1) {
+    text-align: center;
+  }
+
+  table td:nth-child(2) {
+    text-align: end;
+  }
+
+  table td:nth-child(7) {
+    text-align: center;
+    color: rgb(204, 5, 5);
+  }
+
+  .delete-column-button {
+    background-color: transparent;
+    outline: transparent;
+    border: transparent;
+    color: rgb(223, 26, 26);
+  }
+</style>
+
+<table class="table table-bordered border-bottom">
+  <thead class="thead-white" style="height: 32px">
+    <tr>
+      <th scope="col" style="width: 4%"></th>
+      <th scope="col" style="width: 7%">Number</th>
+      <th scope="col" style="width: 32%">Name</th>
+      <th scope="col" style="width: 14%">Status</th>
+      <th scope="col" style="width: 20%">Customer</th>
+      <th scope="col" style="width: 17%">Start Date</th>
+      <th scope="col" style="width: 6%">Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- <tr>
+        <td>
+          <input type="checkbox" style="width: 15px; height: 15px;">
+        </td>
+        <td>{{projects[0].projectNumber}}</td>
+        <td>Facturation/Encaissements</td>
+        <td>New</td>
+        <td>Le Retailes Populaires</td>
+        <td>25.02.2004</td>
+        <td>
+          <button class="delete-column-button">
+            <span class="material-icons">
+              delete
+            </span>
+          </button>
+        </td>
+      </tr> -->
+
+    <tr *ngFor="let pj of projects" [id]="pj.projectNumber">
+      <!-- <tr> -->
+      <td>
+        <input type="checkbox" style="width: 15px; height: 15px" />
+      </td>
+      <td>{{ pj.projectNumber }}</td>
+      <td>{{ pj.name }}</td>
+      <td>{{ pj.status }}</td>
+      <td>{{ pj.customer }}</td>
+      <td>{{ pj.startDate }}</td>
+      <td>
+        <button class="delete-column-button">
+          <span class="material-icons"> delete </span>
+        </button>
+      </td>
+    </tr>
+
+    <span hidden>{{ projects[0].projectNumber }}</span>
+    <!-- BUG'S HERE, ABOVE -->
+  </tbody>
+</table>
