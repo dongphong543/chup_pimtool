@@ -47,13 +47,9 @@ export class ProjectListComponent {
 
   checkboxCount: number = 0;
 
-  constructor(private service: PIMService) {
-    // this.projects$ = this.httpClient.get<any>("http://localhost:44386/api/Project");
-    // console.log("HERE");
-  }
+  constructor(private service: PIMService) { }
 
   ngOnInit(): void {
-    // this.getProjects();
     this.projects$ = combineLatest(
       this.service.getProjects(),
       this.sortDirection$
@@ -83,44 +79,9 @@ export class ProjectListComponent {
         this.checkboxCount += 1;
       }
     });
-
-    // console.log(this.checkboxCount);
-  }
-
-  getProjects() {
-    // this.httpClient
-    //   .get<any>("http://localhost:44386/api/Project")
-    //   .subscribe((response) => {
-    //     // console.log(response);
-    //     this.projects = response;
-    //     this.projects.forEach((i) => {
-    //       // if (i.startDate)
-    //       //   i.startDate = i.startDate
-    //       //     .slice(0, 10)
-    //       //     .split("-")
-    //       //     .reverse()
-    //       //     .join(".");
-    //       // if (i.endDate)
-    //       //   i.endDate = i.endDate.slice(0, 10).split("-").reverse().join(".");
-    //       i.checkbox = false;
-    //     });
-    //     this.projects.sort((a, b) => {
-    //       return a.projectNumber - b.projectNumber;
-    //     });
-    //     this.reservedProjects = JSON.parse(JSON.stringify(this.projects));
-    //     console.log(this.projects);
-    //   });
   }
 
   deleteProject(pjNum: string) {
-
-    // for (let i = 0; i < this.projectsArr.length; ++i) {
-    //   if (pjNum == this.projectsArr[i].projectNumber.toString())
-    //     return this.projectsArr[i].id;
-    // }
-
-    // return null;
-
     this.projects$.subscribe((response) => {
         this.projectsArr = response;
 
@@ -138,40 +99,15 @@ export class ProjectListComponent {
         } else {
           console.log("Not deleted");
         }
-
-        window.location.reload();
-    });
-
-
-
-
-    // let id = this.getProjectIdFromPjNum(pjNum);
-    // if (id == null) {
-    //   // throw new Errors.ProjectNotFoundError(pjNum);
-    //   alert("Deleted already");
-    //   return;
-    // }
-
-    // if (confirm("Are you sure you want to delete this project?")) {
-    //   this.service.deleteProject(id).subscribe();
-    //   console.log("Deleted");
-    // } else {
-    //   console.log("Not deleted");
-    // }
-
-    // // this.getProjects();
-    // window.location.reload();
+      },
+    );
   }
 
   deleteCheckedProject() {
-    // this.projects$.subscribe((response) => {
-    //   // let tempPjArr = this.projectsArr;
-
       if (confirm("Are you sure you want to delete checked project(s)?")) {
         {
           for (let i = 0; i < this.projectsArr.length; ++i) {
             if (this.projectsArr[i].checkbox && this.projectsArr[i].status != "NEW") {
-              // throw new Errors.DeleteNotNewProjectError(i.projectNumber);
               alert("Only the New projects can be deleted. Please select again.");
               window.location.reload();
               return;

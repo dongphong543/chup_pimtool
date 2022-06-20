@@ -10,8 +10,8 @@ using PIMBackend.DTOs;
 namespace PIMBackend.Migrations
 {
     [DbContext(typeof(PIMContext))]
-    [Migration("20220617074220_CreatePIMDatabase")]
-    partial class CreatePIMDatabase
+    [Migration("20220620080926_PIMDatabase")]
+    partial class PIMDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -142,7 +142,7 @@ namespace PIMBackend.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.HasIndex(new[] { "ProjectNumber" }, "UQ__PROJECT__C11D06095E954A32")
+                    b.HasIndex("ProjectNumber")
                         .IsUnique();
 
                     b.ToTable("PROJECT");
@@ -158,8 +158,7 @@ namespace PIMBackend.Migrations
                         .HasColumnType("numeric(19,0)")
                         .HasColumnName("EMPLOYEE_ID");
 
-                    b.HasKey("ProjectId", "EmployeeId")
-                        .HasName("PK__PROJECT___1F22B372CF8BB702");
+                    b.HasKey("ProjectId", "EmployeeId");
 
                     b.HasIndex("EmployeeId");
 
@@ -169,7 +168,7 @@ namespace PIMBackend.Migrations
             modelBuilder.Entity("PIMBackend.DTOs.Group", b =>
                 {
                     b.HasOne("PIMBackend.DTOs.Employee", "GroupLeader")
-                        .WithOne("Groups")
+                        .WithOne("Group")
                         .HasForeignKey("PIMBackend.DTOs.Group", "GroupLeaderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -182,7 +181,6 @@ namespace PIMBackend.Migrations
                     b.HasOne("PIMBackend.DTOs.Group", "Group")
                         .WithMany("Projects")
                         .HasForeignKey("GroupId")
-                        .HasConstraintName("FK__PROJECT__GROUP_I__2A4B4B5E")
                         .IsRequired();
 
                     b.Navigation("Group");
@@ -193,13 +191,11 @@ namespace PIMBackend.Migrations
                     b.HasOne("PIMBackend.DTOs.Employee", "Employee")
                         .WithMany("ProjectEmployees")
                         .HasForeignKey("EmployeeId")
-                        .HasConstraintName("FK__PROJECT_E__EMPLO__300424B4")
                         .IsRequired();
 
                     b.HasOne("PIMBackend.DTOs.Project", "Project")
                         .WithMany("ProjectEmployees")
                         .HasForeignKey("ProjectId")
-                        .HasConstraintName("FK__PROJECT_E__PROJE__2F10007B")
                         .IsRequired();
 
                     b.Navigation("Employee");
@@ -209,7 +205,7 @@ namespace PIMBackend.Migrations
 
             modelBuilder.Entity("PIMBackend.DTOs.Employee", b =>
                 {
-                    b.Navigation("Groups");
+                    b.Navigation("Group");
 
                     b.Navigation("ProjectEmployees");
                 });

@@ -41,6 +41,39 @@ namespace PIMBackend.Controllers
             return employee;
         }
 
+        [HttpPost("nonexist")]
+        public async Task<ActionResult<Employee[]>> GetNonExistEmployee(string VisaStr)
+        {
+            List<Employee> ret = new List<Employee>();
+            List<string> Visas = new List<string>();
+
+            if (VisaStr != null && VisaStr.Length > 0)
+            {
+                Visas = VisaStr.Split(",").ToList<string>();
+
+                for (int i = 0; i < Visas.Count; ++i)
+                {
+                    Visas[i] = Visas[i].Trim();
+                }
+
+            }
+
+            for (int i = 0; i < Visas.Count; ++i)
+            {
+                //var employee = await _context.Employees.FindAsync(Visas[i]);
+
+                var employeeLst = await _context.Employees.Where(x => x.Visa.ToUpper() == Visas[i]).ToListAsync();
+
+                if (employeeLst.Count != 0)
+                {
+                    ret.Add(employeeLst[0]);
+                }
+            }
+
+            return ret.ToArray();  
+            
+        }
+
         // PUT: api/Employee/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

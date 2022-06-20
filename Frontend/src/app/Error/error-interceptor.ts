@@ -17,10 +17,13 @@ export class HttpErrorInterceptorService implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler) {
     return next.handle(request).pipe(
       catchError((error: any) => {
-        console.log("Interceptor works");
-        this.broadcastService.msg.next(error.status.toString());
-        this.broadcastService.err.next(error);
+        console.log("Interceptor works. Code: " + error.status);
+        // this.broadcastService.msg.next(error.status.toString());
+        // this.broadcastService.err.next(error);
 
+        if (error.status != "400") {
+          window.location.assign("/error");
+        }
         return throwError(error.error); 
       })
     );

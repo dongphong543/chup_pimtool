@@ -90,16 +90,15 @@ namespace PIMBackend.DTOs
                     .HasColumnName("VERSION");
 
                 entity.HasOne(d => d.GroupLeader)
-                    .WithOne(p => p.Groups)
+                    .WithOne(p => p.Group)
                     .HasForeignKey<Group>(d => d.GroupLeaderId);
-                    //.HasConstraintName("FK__GROUP__GROUP_LEA__267ABA7A");
             });
 
             modelBuilder.Entity<Project>(entity =>
             {
                 entity.ToTable("PROJECT");
 
-                entity.HasIndex(e => e.ProjectNumber, "UQ__PROJECT__C11D06095E954A32")
+                entity.HasIndex(e => e.ProjectNumber)
                     .IsUnique();
 
                 entity.Property(e => e.Id)
@@ -149,14 +148,12 @@ namespace PIMBackend.DTOs
                 entity.HasOne(d => d.Group)
                     .WithMany(p => p.Projects)
                     .HasForeignKey(d => d.GroupId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__PROJECT__GROUP_I__2A4B4B5E");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<ProjectEmployee>(entity =>
             {
-                entity.HasKey(e => new { e.ProjectId, e.EmployeeId })
-                    .HasName("PK__PROJECT___1F22B372CF8BB702");
+                entity.HasKey(e => new { e.ProjectId, e.EmployeeId });
 
                 entity.ToTable("PROJECT_EMPLOYEE");
 
@@ -171,21 +168,16 @@ namespace PIMBackend.DTOs
                 entity.HasOne(d => d.Employee)
                     .WithMany(p => p.ProjectEmployees)
                     .HasForeignKey(d => d.EmployeeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__PROJECT_E__EMPLO__300424B4");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.Project)
                     .WithMany(p => p.ProjectEmployees)
                     .HasForeignKey(d => d.ProjectId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__PROJECT_E__PROJE__2F10007B");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
 
             OnModelCreatingPartial(modelBuilder);
-
-
 
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

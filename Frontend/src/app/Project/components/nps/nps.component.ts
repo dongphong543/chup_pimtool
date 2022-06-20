@@ -72,6 +72,13 @@ export class NPSComponent implements OnInit {
 
   pjNumError: boolean;
 
+  // ngStyleString: string = $"{
+  //   'border-color':
+  //     npsForm.get('pjNum').errors?.existPjNumError && isSubmitted
+  //       ? 'red'
+  //       : ''
+  // }"
+
   statuses = [
     { name: "New", code: "NEW" },
     { name: "Planned", code: "PLA" },
@@ -130,7 +137,7 @@ export class NPSComponent implements OnInit {
               name: response.name,
               customer: response.customer,
               group: response.groupId,
-              // member
+              // member: ...
               status: response.status,
               startDate: response.startDate?.split('T')[0],
               endDate: response.endDate?.split('T')[0]           
@@ -267,8 +274,8 @@ export class NPSComponent implements OnInit {
         });
 
         if (memberNotFoundVisa.length == 0) {
-          this.service.postProject(this.pj);
-          window.location.assign("/");
+          this.service.postProject(this.pj).subscribe();
+          // window.location.assign("/");
         }
         else this.isMemberNotFound = true;
       }
@@ -375,7 +382,7 @@ export class NPSComponent implements OnInit {
 
 
   // trying to replace by api 
-  checkMemberList() {
+  genMemberList() {
     if (
       this.npsForm.controls.member.value != null &&
       this.npsForm.controls.member.value.length > 0
@@ -384,41 +391,46 @@ export class NPSComponent implements OnInit {
       for (let i = 0; i < members.length; ++i) {
         members[i] = members[i].trim();
       }
-    } else {
+    } 
+    
+    else {
       members = [];
     }
 
-    var memberId: number[] = [],
-      memberNotFoundVisa: string[] = [];
-
-    this.employees$.subscribe(
-      (response) => {
-        members.forEach((vis) => {
-          let found: boolean = false;
-          let pos = response.map((em) => em.visa).findIndex((em) => em == vis);
-
-          if (pos != -1) {
-            found = true;
-            memberId.push(response[pos].id);
-          }
-
-          if (!found) {
-            memberNotFoundVisa.push(vis);
-          }
-
-          console.log(memberId);
-          if (this.npsForm.valid == true) {
-            console.log(memberNotFoundVisa);
-            this.memberNotFound$ = of(memberNotFoundVisa);
-          }
-        });
-
-        if (memberNotFoundVisa.length == 0) this.service.postProject(this.pj);
-        else this.isMemberNotFound = true;
-      }
-      // error => console.log(error + "HEHE")
-    );
+    return members;
   }
+
+    // var memberId: number[] = [],
+    //   memberNotFoundVisa: string[] = [];
+
+    // this.employees$.subscribe(
+    //   (response) => {
+    //     members.forEach((vis) => {
+    //       let found: boolean = false;
+    //       let pos = response.map((em) => em.visa).findIndex((em) => em == vis);
+
+    //       if (pos != -1) {
+    //         found = true;
+    //         memberId.push(response[pos].id);
+    //       }
+
+    //       if (!found) {
+    //         memberNotFoundVisa.push(vis);
+    //       }
+
+    //       console.log(memberId);
+    //       if (this.npsForm.valid == true) {
+    //         console.log(memberNotFoundVisa);
+    //         this.memberNotFound$ = of(memberNotFoundVisa);
+    //       }
+    //     });
+
+    //     if (memberNotFoundVisa.length == 0) this.service.postProject(this.pj);
+    //     else this.isMemberNotFound = true;
+    //   }
+    //   // error => console.log(error + "HEHE")
+    // );
+    // }
 
   changePjNum() {
     this.broadcastService.msg.next("");

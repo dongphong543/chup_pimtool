@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PIMBackend.Migrations
 {
-    public partial class CreatePIMDatabase : Migration
+    public partial class PIMDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -63,7 +63,7 @@ namespace PIMBackend.Migrations
                 {
                     table.PrimaryKey("PK_PROJECT", x => x.ID);
                     table.ForeignKey(
-                        name: "FK__PROJECT__GROUP_I__2A4B4B5E",
+                        name: "FK_PROJECT_GROUP_GROUP_ID",
                         column: x => x.GROUP_ID,
                         principalTable: "GROUP",
                         principalColumn: "ID",
@@ -79,15 +79,15 @@ namespace PIMBackend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__PROJECT___1F22B372CF8BB702", x => new { x.PROJECT_ID, x.EMPLOYEE_ID });
+                    table.PrimaryKey("PK_PROJECT_EMPLOYEE", x => new { x.PROJECT_ID, x.EMPLOYEE_ID });
                     table.ForeignKey(
-                        name: "FK__PROJECT_E__EMPLO__300424B4",
+                        name: "FK_PROJECT_EMPLOYEE_EMPLOYEE_EMPLOYEE_ID",
                         column: x => x.EMPLOYEE_ID,
                         principalTable: "EMPLOYEE",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK__PROJECT_E__PROJE__2F10007B",
+                        name: "FK_PROJECT_EMPLOYEE_PROJECT_PROJECT_ID",
                         column: x => x.PROJECT_ID,
                         principalTable: "PROJECT",
                         principalColumn: "ID",
@@ -106,7 +106,7 @@ namespace PIMBackend.Migrations
                 column: "GROUP_ID");
 
             migrationBuilder.CreateIndex(
-                name: "UQ__PROJECT__C11D06095E954A32",
+                name: "IX_PROJECT_PROJECT_NUMBER",
                 table: "PROJECT",
                 column: "PROJECT_NUMBER",
                 unique: true);

@@ -64,8 +64,8 @@
                 npsForm.get('pjNum').errors?.existPjNumError && isSubmitted
               "
             >
-              <!-- {{ "pj-num-error" | translate }} -->
-              {{this.broadcastService.msg|async}} 
+              {{ "pj-num-error" | translate }}
+              <!-- {{this.broadcastService.msg|async}}  -->
               <!-- de reproduce, xoa dong ngif phia tren, uncomment dong msg, comment dong pj-num-error -->
             </div>
           </div>
@@ -103,7 +103,17 @@
             <input
               class="long-nps-input"
               formControlName="member"
+              list="members"
             />
+            <datalist id="members">
+              <option 
+                *ngFor="let mem of employees$ | async"
+                [value]="mem.visa"
+                multiple 
+              >
+                {{ mem.firstName }} {{ mem.lastName }}
+              </option>
+            </datalist>
 
             <div
               class="custom-alert-after-input"

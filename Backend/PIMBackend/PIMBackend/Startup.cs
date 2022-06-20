@@ -13,6 +13,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using PIMBackend.DTOs;
 using Microsoft.EntityFrameworkCore;
+using PIMBackend.ErrorHandler;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 namespace PIMBackend
 {
@@ -29,7 +32,9 @@ namespace PIMBackend
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddNewtonsoftJson(x =>
+                    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PIMBackend", Version = "v1" });
@@ -63,6 +68,8 @@ namespace PIMBackend
                 .AllowAnyMethod()
                 .AllowAnyHeader()
             );
+
+            app.ConfigureExceptionHandler();
 
             app.UseHttpsRedirection();
 

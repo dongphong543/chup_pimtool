@@ -11,7 +11,7 @@ namespace PIMBackend.DTOs
     {
         public Employee()
         {
-            Groups = new Group();
+            Group = new Group();
             ProjectEmployees = new HashSet<ProjectEmployee>();
         }
 
@@ -23,7 +23,7 @@ namespace PIMBackend.DTOs
         public DateTime BirthDate { get; set; }
         public decimal Version { get; set; }
 
-        public virtual Group Groups { get; set; }
+        public virtual Group Group { get; set; }
         public virtual ICollection<ProjectEmployee> ProjectEmployees { get; set; }
     }
 }

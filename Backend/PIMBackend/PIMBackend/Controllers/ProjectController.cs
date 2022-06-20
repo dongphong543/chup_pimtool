@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PIMBackend.DTOs;
+using PIMBackend.Errors;
 
 namespace PIMBackend.Controllers
 {
@@ -35,7 +36,7 @@ namespace PIMBackend.Controllers
 
             if (Project == null)
             {
-                return NotFound();
+                throw new IdNotExistException();
             }
 
             return Project;
@@ -44,15 +45,27 @@ namespace PIMBackend.Controllers
         [HttpGet("pjNum/{pjNum}")]
         public async Task<ActionResult<Project>> GetProjectByPjNum(decimal pjNum)
         {
-            //var Project = await _context.Projects.FindAsync(id);
             var Project = await _context.Projects.Where(x => x.ProjectNumber == pjNum).ToListAsync();
 
             if (Project == null || Project.Count == 0)
             {
-                return NotFound();
+                throw new ProjectNumberNotExistException();
             }
 
             return Project[0];
+        }
+
+        [HttpGet("exist/{pjNum}")]
+        public async Task<ActionResult<bool>> CheckProjectByPjNum(decimal pjNum)
+        {
+            var Project = await _context.Projects.Where(x => x.ProjectNumber == pjNum).ToListAsync();
+
+            if (Project == null || Project.Count == 0)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         // PUT: api/Project/5
@@ -62,51 +75,42 @@ namespace PIMBackend.Controllers
         {
             if (id != Project.Id)
             {
-                return BadRequest();
+                throw new IdNotEqualsProjcetIdException();
             }
 
+            var pj = await _context.Projects.FindAsync(id);
 
-            try
+            if (pj == null)
             {
-                //var pj = await GetProjectByPjNum(Project.ProjectNumber);
-                //if (Project.Version != pj.R)
-                //{
-                //    Project.Version += 1;
-                //}
-
-                var pj = await _context.Projects.FindAsync(id);
-
-                if (pj == null)
-                {
-                    return NotFound();
-                }
-
-                if (Project.Version == pj.Version)
-                {
-                    Console.WriteLine(Project.Version.ToString(), pj.Version.ToString());
-                    Project.Version = pj.Version + 1;
-                }
-                else
-                {
-                    throw new DbUpdateConcurrencyException();
-                }
-
-                _context.Entry(pj).State = EntityState.Detached;
-                _context.Entry(Project).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                throw new IdNotExistException();
             }
-            catch (DbUpdateConcurrencyException)
+
+            if (Project.StartDate > Project.EndDate)
             {
-                if (!ProjectExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw new DateInvalidException();
             }
 
+            if (Project.ProjectNumber < 0 || Project.ProjectNumber > 9999 ||
+                Project.Name.Length > 50 ||
+                Project.Customer.Length > 50)
+            {
+                throw new FormInvalidException();
+            }
+
+            if (Project.Version == pj.Version)
+            {
+                //Console.WriteLine(Project.Version.ToString(), pj.Version.ToString());
+                Project.Version = pj.Version + 1;
+            }
+            else
+            {
+                throw new DbUpdateConcurrencyException();
+            }
+
+            _context.Entry(pj).State = EntityState.Detached;
+            _context.Entry(Project).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        
             return NoContent();
         }
 
@@ -119,20 +123,23 @@ namespace PIMBackend.Controllers
 
             if (pj == true)
             {
-                return BadRequest();
+                throw new ProjectNumberAlreadyExistsException();
             }
 
-            try
+            if (Project.StartDate > Project.EndDate)
             {
-                _context.Projects.Add(Project);
+                throw new DateInvalidException();
             }
-            catch (Exception e)
+
+            if (Project.ProjectNumber < 0 || Project.ProjectNumber > 9999 ||
+                Project.Name.Length > 50 ||
+                Project.Customer.Length > 50)
             {
-                return BadRequest();
+                throw new FormInvalidException();
             }
-            
+
+            _context.Projects.Add(Project);
             await _context.SaveChangesAsync();
-
 
             return CreatedAtAction("GetProject", new { id = Project.Id }, Project);
         }
@@ -144,7 +151,7 @@ namespace PIMBackend.Controllers
             var Project = await _context.Projects.FindAsync(id);
             if (Project == null)
             {
-                return NotFound();
+                throw new IdNotExistException();
             }
 
             _context.Projects.Remove(Project);

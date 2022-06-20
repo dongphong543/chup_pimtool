@@ -26,15 +26,16 @@ export class PIMService {
     return this.httpClient.get<any>(this.localUrl + "/Group");
   }
 
+  checkProjectByPjNum(pjNum: number): Observable<any> {
+    return this.httpClient.get<any>(this.localUrl + "/Project/exist/" + pjNum);
+  }
+
+  checkNonExistMemberByVisa(mems: string): Observable<any> {
+    return this.httpClient.post<any>(this.localUrl + "Employees/nonexist", mems);
+  }
+
   postProject(pj: any) {
-    this.httpClient.post(this.localUrl + "/Project", pj).subscribe(
-      (response) => {
-        console.log(response);
-      },
-      // (error) => {
-      //   console.log(error);
-      // }
-    );
+    return this.httpClient.post(this.localUrl + "/Project", pj);
   }
 
   putProject(pj: any) {
@@ -50,7 +51,13 @@ export class PIMService {
   }
 
   deleteProject(id: number) {
-    return this.httpClient.delete(this.localUrl + "/Project/" + id.toString());
+    return this.httpClient.delete(this.localUrl + "/Project/" + id.toString())
+    // .pipe(
+    //   catchError(e => {
+    //     if (e) console.log(e.status);
+    //     return of(null);
+    //   })
+    // );
   }
 
   sortByColumn(
@@ -58,6 +65,8 @@ export class PIMService {
     column: string,
     direction = "desc"
   ): any[] {
+    // let sortedArray = list;
+    // console.log(list)
     let sortedArray = (list || []).sort((a, b) => {
       if (a[column] > b[column]) {
         return direction === "desc" ? 1 : -1;
