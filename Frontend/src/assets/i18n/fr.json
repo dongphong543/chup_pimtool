@@ -36,9 +36,13 @@
 
   "pj-num-error": "Le numéro de projet existait déjà. Veuillez sélectionner un autre numéro de projet",
   "pj-date-error":"La date de fin ne doit pas être antérieure à la date de début",
+  "pj-mem-error": "Les visas suivants n'existent pas: ",
 
   "edit-project-information": "Modifier les Informations sur le Projet",
 
   "error-screen-line1": "Une erreur inattendue s'est produite.",
-  "error-screen-line2": "Veuillez contacter votre administrateur."
+  "error-screen-line2.1": "Veuillez",
+  "error-screen-line2.2": "contacter votre administrateur.",
+  "error-screen-line3.1": "ou",
+  "error-screen-line3.2": "retour au projet de recherche"
 }

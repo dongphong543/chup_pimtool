@@ -25,8 +25,8 @@ namespace PIMBackend.ErrorHandler
                     var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
                     if (contextFeature != null)
                     {
-                        //var logger = app.ApplicationServices.GetRequiredService<ILogger<Startup>>();
-                        //logger.LogError($"Co cai loi gi o day ne! {contextFeature.Error}");
+                        var logger = app.ApplicationServices.GetRequiredService<ILogger<Startup>>();
+                        logger.LogError($"Co cai loi gi o day ne! {contextFeature.Error}");
 
                         await context.Response.WriteAsync(new ErrorDetails()
                         {

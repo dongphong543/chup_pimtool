@@ -7,6 +7,14 @@ namespace PIMBackend.DTOs
 {
     public partial class ProjectEmployee
     {
+        public ProjectEmployee() { }
+
+        public ProjectEmployee(decimal pjId, decimal emId)
+        {
+            this.ProjectId = pjId;
+            this.EmployeeId = emId;
+        }
+
         public decimal ProjectId { get; set; }
         public decimal EmployeeId { get; set; }
 

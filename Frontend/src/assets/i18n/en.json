@@ -36,9 +36,13 @@
 
   "pj-num-error": "The project number already existed. Please select a different project number",
   "pj-date-error": "The end date must not be sooner than the start date",
+  "pj-mem-error": "The following visas do not exist: ",
 
   "edit-project-information": "Edit Project Information",
 
   "error-screen-line1": "Unexpected error occurred.",
-  "error-screen-line2": "Please contact your administrator."
+  "error-screen-line2.1": "Please",
+  "error-screen-line2.2": "contact your administrator.",
+  "error-screen-line3.1": "or",
+  "error-screen-line3.2": "back to search project"
 }

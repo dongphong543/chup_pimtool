@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PIMBackend.DTOs;
+using Microsoft.VisualBasic;
 
 namespace PIMBackend.Controllers
 {
@@ -29,7 +30,7 @@ namespace PIMBackend.Controllers
 
         // GET: api/Employee/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(int id)
+        public async Task<ActionResult<Employee>> GetEmployee(decimal id)
         {
             var employee = await _context.Employees.FindAsync(id);
 
@@ -42,9 +43,12 @@ namespace PIMBackend.Controllers
         }
 
         [HttpPost("nonexist")]
-        public async Task<ActionResult<Employee[]>> GetNonExistEmployee(string VisaStr)
+        public async Task<ActionResult<string[]>> GetNonExistEmployee(MemString MemStringDTO)
         {
-            List<Employee> ret = new List<Employee>();
+
+            string VisaStr = MemStringDTO.VisaStr;
+
+            List<string> ret = new List<string>();
             List<string> Visas = new List<string>();
 
             if (VisaStr != null && VisaStr.Length > 0)
@@ -58,20 +62,64 @@ namespace PIMBackend.Controllers
 
             }
 
+            Visas = Visas.Where(x => x != "").ToList();
+
             for (int i = 0; i < Visas.Count; ++i)
             {
                 //var employee = await _context.Employees.FindAsync(Visas[i]);
+                List<Employee> employeeVisaLst = new List<Employee>();
 
-                var employeeLst = await _context.Employees.Where(x => x.Visa.ToUpper() == Visas[i]).ToListAsync();
-
-                if (employeeLst.Count != 0)
+                employeeVisaLst = await _context.Employees.Where(x => x.Visa.ToUpper() == Visas[i]).ToListAsync();
+                
+                if (employeeVisaLst.Count == 0)
                 {
-                    ret.Add(employeeLst[0]);
+                    ret.Add(Visas[i].ToUpper());
                 }
             }
 
-            return ret.ToArray();  
+            return ret.ToArray();
+            //return new string[] {"Hello"};
             
+        }
+
+        [HttpPost("exist")]
+        public async Task<ActionResult<string[]>> GetExistEmployee(MemString MemStringDTO)
+        {
+
+            string VisaStr = MemStringDTO.VisaStr;
+
+            List<string> ret = new List<string>();
+            List<string> Visas = new List<string>();
+
+            if (VisaStr != null && VisaStr.Length > 0)
+            {
+                Visas = VisaStr.Split(",").ToList<string>();
+
+                for (int i = 0; i < Visas.Count; ++i)
+                {
+                    Visas[i] = Visas[i].Trim();
+                }
+
+            }
+
+            Visas = Visas.Where(x => x != "").ToList();
+
+            for (int i = 0; i < Visas.Count; ++i)
+            {
+                //var employee = await _context.Employees.FindAsync(Visas[i]);
+                List<Employee> employeeVisaLst = new List<Employee>();
+
+                employeeVisaLst = await _context.Employees.Where(x => x.Visa.ToUpper() == Visas[i]).ToListAsync();
+
+                if (employeeVisaLst.Count > 0)
+                {
+                    ret.Add(Visas[i].ToUpper());
+                }
+            }
+
+            return ret.ToArray();
+            //return new string[] {"Hello"};
+
         }
 
         // PUT: api/Employee/5

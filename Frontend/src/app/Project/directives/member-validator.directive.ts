@@ -4,17 +4,25 @@ import {
     ValidationErrors,
   } from "@angular/forms";
   import { Observable, of } from "rxjs";
-  import { map } from "rxjs/operators";
+  import { first, map } from "rxjs/operators";
   
   export function memberValidator(service): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       const mems = control.value;
+    //   console.log(typeof(mems))
 
     //   if (genMemberList(mems).length > 0) return of(null);
   
+    //   service
+    //     .checkNonExistMemberByVisa(mems)
+    //     .subscribe(res => console.log(res))
+
+    // return of({ memberNonExistError: true });
+
       return service
-        .checkNonExistMemberByVisa(mems)
-        .pipe(map((res) => (res == true ? { existPjNumError: true } : null)))
+        .checkNonExistMemberByVisa(mems.toString())
+        .pipe(map((res: any[]) => (res.length > 0 ? { memberNonExistError: true } : null)))
+        .pipe(first())
     };
   }
 

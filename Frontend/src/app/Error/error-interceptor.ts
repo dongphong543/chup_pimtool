@@ -5,6 +5,7 @@ import {
   HttpRequest,
 } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 import { throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { BroadcastService } from "./broadcast.service";
@@ -13,16 +14,17 @@ import { BroadcastService } from "./broadcast.service";
   providedIn: "root",
 })
 export class HttpErrorInterceptorService implements HttpInterceptor {
-  constructor(public broadcastService: BroadcastService) {}
+  constructor(public broadcastService: BroadcastService, private router: Router) {}
   intercept(request: HttpRequest<any>, next: HttpHandler) {
     return next.handle(request).pipe(
-      catchError((error: any) => {
-        console.log("Interceptor works. Code: " + error.status);
-        // this.broadcastService.msg.next(error.status.toString());
-        // this.broadcastService.err.next(error);
+      catchError((error: HttpErrorResponse) => {
+        // console.log("Interceptor works. Code: " + error.status);
+        console.log(error)
+        // this.broadcastService.msg.next(error.message);
+        this.broadcastService.err.next(error);
 
-        if (error.status != "400") {
-          window.location.assign("/error");
+        if (error.status.toString() != "400") {
+          this.router.navigate(["/error"]);
         }
         return throwError(error.error); 
       })

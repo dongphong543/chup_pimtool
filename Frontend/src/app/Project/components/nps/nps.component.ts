@@ -18,6 +18,8 @@ import { BroadcastService } from "../../../Error/broadcast.service";
 import { dateValidator } from "../../directives/date-validator.directive";
 import { existPjNumValidator } from "../../directives/existed-pjNum-validator.directive";
 import { formFullValidator } from "../../directives/form-full-validator.directive";
+import { memberValidator } from "../../directives/member-validator.directive";
+import { Router } from "@angular/router";
 
 class Employee {
   constructor(
@@ -68,6 +70,7 @@ export class NPSComponent implements OnInit {
   npsForm: FormGroup;
   groups$: Observable<any>;
   employees$: Observable<any>;
+  nonExistEmployees$: Observable<any>;
   projectLeaderName$: Observable<any>;
 
   pjNumError: boolean;
@@ -91,7 +94,8 @@ export class NPSComponent implements OnInit {
   constructor(
     private service: PIMService,
     private location: Location,
-    public broadcastService: BroadcastService
+    public broadcastService: BroadcastService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -104,8 +108,6 @@ export class NPSComponent implements OnInit {
 
     this.groups$ = this.service.getGroups();
     this.employees$ = this.service.getEmployees();
-    
-    // this.nowInEPS? path.slice(5, path.length + 1) : 
 
     this.npsForm = new FormGroup(
       {
@@ -117,7 +119,7 @@ export class NPSComponent implements OnInit {
         name: new FormControl("", [Validators.required, Validators.maxLength(50)]),
         customer: new FormControl(null, [Validators.required, Validators.maxLength(50)]),
         group: new FormControl("", Validators.required),
-        member: new FormControl(""),
+        member: new FormControl("", [], [memberValidator(this.service)]),
         status: new FormControl("NEW", Validators.required),
         startDate: new FormControl(null, Validators.required),
         endDate: new FormControl(null),
@@ -125,9 +127,11 @@ export class NPSComponent implements OnInit {
       {
         validators: [dateValidator],
         asyncValidators: [],
-        updateOn: "blur",
+        updateOn: "change",
       }
     );
+
+    // this.nonExistEmployees$ = this.service.checkNonExistMemberByVisa(this.npsForm.controls.member.value);
 
       if (this.nowInEPS) {
         this.service.getProjectByPjNum(parseInt(path.slice(10, path.length + 1))).subscribe(
@@ -149,7 +153,8 @@ export class NPSComponent implements OnInit {
             },
           error => 
           {
-            window.location.assign("/");
+            // window.location.assign("/");
+            this.router.navigate(["/"]);
           }
         );
       }
@@ -190,7 +195,20 @@ export class NPSComponent implements OnInit {
     // if (this.formFull() == false) return;
     // console.log(this.npsForm.errors.dateError);
     // if (this.npsForm.get("pjNum").invalid || this.npsForm.errors?.dateError) return;
+    
+    // console.log(this.npsForm);
+    // console.log(this.npsForm.get('member').errors?.memberNonExistError)
+    this.nonExistEmployees$ = this.service.checkNonExistMemberByVisa(this.npsForm.controls.member.value);
+    // this.nonExistEmployees$.subscribe(r => {
+    //   console.log(r);
+    // })
+
+
     if (this.npsForm.invalid) return;
+    // console.log(this.npsForm);
+    
+
+    
 
     this.pj = new Project(
       this.pjId,
@@ -214,6 +232,17 @@ export class NPSComponent implements OnInit {
   }
 
   addProject() {
+    if (this.npsForm.invalid) return;
+    this.service.postProject(this.pj).subscribe();
+    this.service.checkExistMemberByVisa(this.npsForm.controls.member.value).subscribe(
+      response => {
+        console.log(response)
+        // this.service.postProjectEmployee(this.pj.projectNumber, response);
+      }
+    );
+
+    
+
     // this.isSubmitted = true;
     // if (this.formFull() == false) return;
     // if (this.npsForm.get("pjNum").invalid && this.nowInEPS == false) return;
@@ -236,51 +265,51 @@ export class NPSComponent implements OnInit {
 
     // check if project number exist => Not needed, since there's ERROR 500 => update: validator now
 
-    if (
-      this.npsForm.controls.member.value != null &&
-      this.npsForm.controls.member.value.length > 0
-    ) {
-      var members: string[] = this.npsForm.controls.member.value.split(",");
-      for (let i = 0; i < members.length; ++i) {
-        members[i] = members[i].trim();
-      }
-    } else {
-      members = [];
-    }
+    // if (
+    //   this.npsForm.controls.member.value != null &&
+    //   this.npsForm.controls.member.value.length > 0
+    // ) {
+    //   var members: string[] = this.npsForm.controls.member.value.split(",");
+    //   for (let i = 0; i < members.length; ++i) {
+    //     members[i] = members[i].trim();
+    //   }
+    // } else {
+    //   members = [];
+    // }
 
-    var memberId: number[] = [],
-      memberNotFoundVisa: string[] = [];
+    // var memberId: number[] = [],
+    //   memberNotFoundVisa: string[] = [];
 
-    this.employees$.subscribe(
-      (response) => {
-        members.forEach((vis) => {
-          let found: boolean = false;
-          let pos = response.map((em) => em.visa).findIndex((em) => em == vis);
+    // this.employees$.subscribe(
+    //   (response) => {
+    //     members.forEach((vis) => {
+    //       let found: boolean = false;
+    //       let pos = response.map((em) => em.visa).findIndex((em) => em == vis);
 
-          if (pos != -1) {
-            found = true;
-            memberId.push(response[pos].id);
-          }
+    //       if (pos != -1) {
+    //         found = true;
+    //         memberId.push(response[pos].id);
+    //       }
 
-          if (!found) {
-            memberNotFoundVisa.push(vis);
-          }
+    //       if (!found) {
+    //         memberNotFoundVisa.push(vis);
+    //       }
 
-          console.log(memberId);
-          if (this.npsForm.valid == true) {
-            console.log(memberNotFoundVisa);
-            this.memberNotFound$ = of(memberNotFoundVisa);
-          }
-        });
+    //       console.log(memberId);
+    //       if (this.npsForm.valid == true) {
+    //         console.log(memberNotFoundVisa);
+    //         this.memberNotFound$ = of(memberNotFoundVisa);
+    //       }
+    //     });
 
-        if (memberNotFoundVisa.length == 0) {
-          this.service.postProject(this.pj).subscribe();
-          // window.location.assign("/");
-        }
-        else this.isMemberNotFound = true;
-      }
-      // error => console.log(error + "HEHE")
-    );
+    //     if (memberNotFoundVisa.length == 0) {
+    //       this.service.postProject(this.pj).subscribe();
+    //       // window.location.assign("/");
+    //     }
+    //     else this.isMemberNotFound = true;
+    //   }
+    //   // error => console.log(error + "HEHE")
+    // );
     // setTimeout(() => {}, 1500);
 
     // this.broadcastService.msg.asObservable().subscribe(values => {
@@ -294,83 +323,9 @@ export class NPSComponent implements OnInit {
   }
 
   editProject() {
-    // this.isSubmitted = true;
-    // if (this.formFull() == false) return;
-    // if (this.npsForm.get("pjNum").invalid && this.nowInEPS == false) return;
-
-    // this.pj = new Project(
-    //   null,
-    //   this.npsForm.controls.group.value,
-    //   this.npsForm.controls.pjNum.value,
-    //   this.npsForm.controls.name.value,
-    //   this.npsForm.controls.customer.value,
-    //   this.npsForm.controls.status.value,
-    //   this.npsForm.controls.startDate.value,
-    //   this.npsForm.controls.endDate.value,
-    //   0
-    // );
-
-    // delete this.pj.id;
-
-    // console.log(this.pj);
-
-    // check if project number exist => Not needed, since there's ERROR 500 => update: validator now
-
-    if (
-      this.npsForm.controls.member.value != null &&
-      this.npsForm.controls.member.value.length > 0
-    ) {
-      var members: string[] = this.npsForm.controls.member.value.split(",");
-      for (let i = 0; i < members.length; ++i) {
-        members[i] = members[i].trim();
-      }
-    } else {
-      members = [];
-    }
-
-    var memberId: number[] = [],
-      memberNotFoundVisa: string[] = [];
-
-    this.employees$.subscribe(
-      (response) => {
-        members.forEach((vis) => {
-          let found: boolean = false;
-          let pos = response.map((em) => em.visa).findIndex((em) => em == vis);
-
-          if (pos != -1) {
-            found = true;
-            memberId.push(response[pos].id);
-          }
-
-          if (!found) {
-            memberNotFoundVisa.push(vis);
-          }
-
-          console.log(memberId);
-          if (this.npsForm.valid == true) {
-            console.log(memberNotFoundVisa);
-            this.memberNotFound$ = of(memberNotFoundVisa);
-          }
-        });
-
-        if (memberNotFoundVisa.length == 0) {
-          this.service.putProject(this.pj);
-          // window.location.assign("/");
-        }
-        else this.isMemberNotFound = true;
-      }
-      // error => console.log(error + "HEHE")
-    );
-    // setTimeout(() => {}, 1500);
-
-    // this.broadcastService.msg.asObservable().subscribe(values => {
-    //   console.log(values + "TOI ROI"); // will return false if http error
-    // });
-
-    // console.log(this.pjNumError)
-
-    // memberId.forEach(i => console.log(this.pj.id, i))
-    // memberId.forEach(i => this.service.postProjectEmployee(this.pj.id, i));
+    if (this.npsForm.invalid) return;
+    this.service.putProject(this.pj).subscribe();
+    
   }
 
   // set404MemberFalse() {
@@ -382,23 +337,23 @@ export class NPSComponent implements OnInit {
 
 
   // trying to replace by api 
-  genMemberList() {
-    if (
-      this.npsForm.controls.member.value != null &&
-      this.npsForm.controls.member.value.length > 0
-    ) {
-      var members: string[] = this.npsForm.controls.member.value.split(",");
-      for (let i = 0; i < members.length; ++i) {
-        members[i] = members[i].trim();
-      }
-    } 
+  // genMemberList() {
+  //   if (
+  //     this.npsForm.controls.member.value != null &&
+  //     this.npsForm.controls.member.value.length > 0
+  //   ) {
+  //     var members: string[] = this.npsForm.controls.member.value.split(",");
+  //     for (let i = 0; i < members.length; ++i) {
+  //       members[i] = members[i].trim();
+  //     }
+  //   } 
     
-    else {
-      members = [];
-    }
+  //   else {
+  //     members = [];
+  //   }
 
-    return members;
-  }
+  //   return members;
+  // }
 
     // var memberId: number[] = [],
     //   memberNotFoundVisa: string[] = [];
@@ -432,9 +387,9 @@ export class NPSComponent implements OnInit {
     // );
     // }
 
-  changePjNum() {
-    this.broadcastService.msg.next("");
-  }
+  // changePjNum() {
+  //   this.broadcastService.msg.next("");
+  // }
 
   setSubmittedFalse() {
     this.isSubmitted = false;

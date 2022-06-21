@@ -69,7 +69,7 @@ namespace PIMBackend
                 .AllowAnyHeader()
             );
 
-            app.ConfigureExceptionHandler();
+            //app.ConfigureExceptionHandler();
 
             app.UseHttpsRedirection();
 

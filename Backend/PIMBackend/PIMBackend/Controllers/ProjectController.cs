@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using PIMBackend.DTOs;
 using PIMBackend.Errors;
 
@@ -49,7 +50,7 @@ namespace PIMBackend.Controllers
 
             if (Project == null || Project.Count == 0)
             {
-                throw new ProjectNumberNotExistException();
+                throw new ProjectNumberNotExistsException();
             }
 
             return Project[0];
@@ -58,7 +59,17 @@ namespace PIMBackend.Controllers
         [HttpGet("exist/{pjNum}")]
         public async Task<ActionResult<bool>> CheckProjectByPjNum(decimal pjNum)
         {
-            var Project = await _context.Projects.Where(x => x.ProjectNumber == pjNum).ToListAsync();
+            List<Project> Project;
+
+            try
+            {
+                Project = await _context.Projects.Where(x => x.ProjectNumber == pjNum).ToListAsync();
+            }
+            
+            catch (Exception)
+            {
+                return false;
+            }
 
             if (Project == null || Project.Count == 0)
             {
@@ -73,44 +84,59 @@ namespace PIMBackend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProject(decimal id, Project Project)
         {
-            if (id != Project.Id)
+
+            using (IDbContextTransaction transaction = _context.Database.BeginTransaction())
             {
-                throw new IdNotEqualsProjcetIdException();
+                try
+                {
+                    if (id != Project.Id)
+                    {
+                        throw new IdNotEqualsProjcetIdException();
+                    }
+
+                    var pj = await _context.Projects.FindAsync(id);
+
+                    if (pj == null)
+                    {
+                        return NotFound();
+                    }
+
+                    if (Project.StartDate > Project.EndDate)
+                    {
+                        throw new DateInvalidException();
+                    }
+
+                    if (Project.ProjectNumber < 0 || Project.ProjectNumber > 9999 ||
+                        Project.Name.Length > 50 ||
+                        Project.Customer.Length > 50)
+                    {
+                        throw new FormInvalidException();
+                    }
+
+                    if (Project.Version == pj.Version)
+                    {
+                        //Console.WriteLine(Project.Version.ToString(), pj.Version.ToString());
+                        Project.Version = pj.Version + 1;
+                    }
+                    else
+                    {
+                        throw new DbUpdateConcurrencyException();
+                    }
+
+                    _context.Entry(pj).State = EntityState.Detached;
+                    _context.Entry(Project).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+
+                    transaction.Commit();
+                }
+
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
             }
 
-            var pj = await _context.Projects.FindAsync(id);
-
-            if (pj == null)
-            {
-                throw new IdNotExistException();
-            }
-
-            if (Project.StartDate > Project.EndDate)
-            {
-                throw new DateInvalidException();
-            }
-
-            if (Project.ProjectNumber < 0 || Project.ProjectNumber > 9999 ||
-                Project.Name.Length > 50 ||
-                Project.Customer.Length > 50)
-            {
-                throw new FormInvalidException();
-            }
-
-            if (Project.Version == pj.Version)
-            {
-                //Console.WriteLine(Project.Version.ToString(), pj.Version.ToString());
-                Project.Version = pj.Version + 1;
-            }
-            else
-            {
-                throw new DbUpdateConcurrencyException();
-            }
-
-            _context.Entry(pj).State = EntityState.Detached;
-            _context.Entry(Project).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-        
             return NoContent();
         }
 
@@ -119,27 +145,50 @@ namespace PIMBackend.Controllers
         [HttpPost]
         public async Task<ActionResult<Project>> PostProject(Project Project)
         {
-            var pj = this.ProjectExistsByPjNum(Project.ProjectNumber);
+            //EmployeeController e = new EmployeeController(_context);
+            //string[] r = e.GetNonExistEmployee(new MemString("ABC")).;
 
-            if (pj == true)
+            using (IDbContextTransaction transaction = _context.Database.BeginTransaction())
             {
-                throw new ProjectNumberAlreadyExistsException();
-            }
+                //EmployeeController eController = new EmployeeController(_context);
+                //string[] Visas = await eController.GetNonExistEmployee(MemStringDTO);
 
-            if (Project.StartDate > Project.EndDate)
-            {
-                throw new DateInvalidException();
-            }
+                //if (await eController.GetNonExistEmployee(MemStringDTO) > 0)
 
-            if (Project.ProjectNumber < 0 || Project.ProjectNumber > 9999 ||
-                Project.Name.Length > 50 ||
-                Project.Customer.Length > 50)
-            {
-                throw new FormInvalidException();
-            }
+                try
+                {
+                    var pj = this.ProjectExistsByPjNum(Project.ProjectNumber);
 
-            _context.Projects.Add(Project);
-            await _context.SaveChangesAsync();
+                    if (pj == true)
+                    {
+                        throw new ProjectNumberAlreadyExistsException();
+                    }
+
+                    if (Project.StartDate > Project.EndDate)
+                    {
+                        throw new DateInvalidException();
+                    }
+
+                    if (Project.ProjectNumber < 0 || Project.ProjectNumber > 9999 ||
+                        Project.Name.Length > 50 ||
+                        Project.Customer.Length > 50)
+                    {
+                        throw new FormInvalidException();
+                    }
+
+                    _context.Projects.Add(Project);
+                    await _context.SaveChangesAsync();
+
+                    transaction.Commit();
+                }
+
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+
+            }
 
             return CreatedAtAction("GetProject", new { id = Project.Id }, Project);
         }
@@ -162,12 +211,32 @@ namespace PIMBackend.Controllers
 
         private bool ProjectExists(decimal id)
         {
-            return _context.Projects.Any(e => e.Id == id);
+            bool ret;
+            try
+            {
+                ret = _context.Projects.Any(e => e.Id == id);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return ret;
         }
 
         private bool ProjectExistsByPjNum(decimal pjNum)
         {
-            return _context.Projects.Any(e => e.ProjectNumber == pjNum);
+            bool ret;
+            try
+            {
+                ret = _context.Projects.Any(e => e.ProjectNumber == pjNum);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return ret;
         }
     }
 }

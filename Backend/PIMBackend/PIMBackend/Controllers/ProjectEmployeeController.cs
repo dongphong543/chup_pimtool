@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using PIMBackend.DTOs;
+using PIMBackend.Errors;
 
 namespace PIMBackend.Controllers
 {
@@ -46,9 +48,9 @@ namespace PIMBackend.Controllers
         [HttpPut("{pjId}_{emId}")] // [HttpPut("{id}")]
         public async Task<IActionResult> PutProjectEmployee(decimal pjId, decimal emId, ProjectEmployee ProjectEmployee)
         {
-            if (pjId != ProjectEmployee.ProjectId && emId != ProjectEmployee.EmployeeId)
+            if (pjId != ProjectEmployee.ProjectId || emId != ProjectEmployee.EmployeeId)
             {
-                return BadRequest();
+                throw new IdNotExistException();
             }
 
             _context.Entry(ProjectEmployee).State = EntityState.Modified;
@@ -61,7 +63,7 @@ namespace PIMBackend.Controllers
             {
                 if (!ProjectEmployeeExists(pjId, emId))
                 {
-                    return NotFound();
+                    throw new IdNotExistException();
                 }
                 else
                 {
@@ -75,14 +77,32 @@ namespace PIMBackend.Controllers
         // POST: api/ProjectEmployee
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ProjectEmployee>> PostProjectEmployee(ProjectEmployee ProjectEmployee)
+        public async Task<ActionResult<ProjectEmployee>> PostProjectEmployee(PjNumVisa PjNumVisa)
         {
-            _context.ProjectEmployees.Add(ProjectEmployee);
-            await _context.SaveChangesAsync();
+            decimal PjId = -1, EmId = -1;
+
+            using (IDbContextTransaction transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    PjId = GetIdFromProjectNumber(PjNumVisa.ProjectPjNum);
+                    EmId = GetIdFromVisa(PjNumVisa.EmployeeVisa);
+
+                    _context.ProjectEmployees.Add(new ProjectEmployee(PjId, EmId));
+                    await _context.SaveChangesAsync();
+
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
 
             return CreatedAtAction("GetProjectEmployee", new { 
-                pjId = ProjectEmployee.ProjectId, emId = ProjectEmployee.EmployeeId 
-            }, ProjectEmployee);
+                pjId = PjId, emId = EmId
+            }, PjNumVisa);
         }
 
         // DELETE: api/ProjectEmployee/5
@@ -104,6 +124,30 @@ namespace PIMBackend.Controllers
         private bool ProjectEmployeeExists(decimal pjId, decimal emId)
         {
             return _context.ProjectEmployees.Any(e => e.ProjectId == pjId && e.EmployeeId == emId);
+        }
+
+        private decimal GetIdFromProjectNumber(decimal pjNum) 
+        {
+            var Project = _context.Projects.Where(x => x.ProjectNumber == pjNum).ToList();
+
+            if (Project == null || Project.Count == 0)
+            {
+                throw new ProjectNumberNotExistsException();
+            }
+
+            return Project[0].Id;
+        }
+
+        private decimal GetIdFromVisa(string visa)
+        {
+            var Employee = _context.Employees.Where(x => x.Visa == visa).ToList();
+
+            if (Employee == null || Employee.Count == 0)
+            {
+                throw new ProjectNumberNotExistsException();
+            }
+
+            return Employee[0].Id;
         }
     }
 }

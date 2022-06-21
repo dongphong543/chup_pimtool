@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { PIMService } from "../pim.service";
 import { Observable, combineLatest, BehaviorSubject } from "rxjs";
 import { filter, map, scan } from "rxjs/operators";
+import { Router } from "@angular/router";
 
 export class Project {
   constructor(
@@ -47,7 +48,7 @@ export class ProjectListComponent {
 
   checkboxCount: number = 0;
 
-  constructor(private service: PIMService) { }
+  constructor(private service: PIMService, private router: Router) { }
 
   ngOnInit(): void {
     this.projects$ = combineLatest(
@@ -99,6 +100,8 @@ export class ProjectListComponent {
         } else {
           console.log("Not deleted");
         }
+
+        window.location.reload();
       },
     );
   }

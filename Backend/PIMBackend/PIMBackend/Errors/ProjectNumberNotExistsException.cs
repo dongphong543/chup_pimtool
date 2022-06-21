@@ -2,7 +2,7 @@
 
 namespace PIMBackend.Errors
 {
-    public class ProjectNumberNotExistException: Exception
+    public class ProjectNumberNotExistsException : Exception
     {
     }
 }

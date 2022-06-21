@@ -5,12 +5,10 @@ import { BehaviorSubject } from "rxjs";
   providedIn: "root",
 })
 export class BroadcastService {
-  public msg: BehaviorSubject<string>;
   public err: BehaviorSubject<any>;
 
   constructor() {
-    //initialize it to false
-    this.msg = new BehaviorSubject<string>("");
+    //initialize it to empty
     this.err = new BehaviorSubject<any>("");
   }
 }

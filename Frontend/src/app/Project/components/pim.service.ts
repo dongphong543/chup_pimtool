@@ -31,7 +31,11 @@ export class PIMService {
   }
 
   checkNonExistMemberByVisa(mems: string): Observable<any> {
-    return this.httpClient.post<any>(this.localUrl + "Employees/nonexist", mems);
+    return this.httpClient.post<any>(this.localUrl + "/Employee/nonexist", {VisaStr: mems});
+  }
+
+  checkExistMemberByVisa(mems: string): Observable<any> {
+    return this.httpClient.post<any>(this.localUrl + "/Employee/exist", {VisaStr: mems});
   }
 
   postProject(pj: any) {
@@ -39,15 +43,20 @@ export class PIMService {
   }
 
   putProject(pj: any) {
-    return this.httpClient.put(this.localUrl + "/Project/" + pj.id, pj).subscribe(
-      (response) => {
-        console.log("UPDATE")
-        console.log(response);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+    return this.httpClient.put(this.localUrl + "/Project/" + pj.id, pj)
+    // .subscribe(
+    //   (response) => {
+    //     console.log("UPDATE")
+    //     console.log(response);
+    //   },
+    //   (error) => {
+    //     console.log(error);
+    //   }
+    // );
+  }
+
+  postProjectEmployee(pjNum: number, emVisa: string[]) {
+    return this.httpClient.post(this.localUrl + "/ProjectEmployee", {ProjectPjNum: pjNum, EmployeeVisa: emVisa})
   }
 
   deleteProject(id: number) {
@@ -79,19 +88,19 @@ export class PIMService {
     return sortedArray;
   }
 
-  postProjectEmployee(pjId: number, emId: number) {
-    this.httpClient
-      .post(this.localUrl + "/ProjectEmployee", {
-        projectId: pjId,
-        employeeId: emId,
-      })
-      .subscribe(
-        (response) => {
-          console.log(response);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-  }
+  // postProjectEmployee(pjId: number, emId: number) {
+  //   this.httpClient
+  //     .post(this.localUrl + "/ProjectEmployee", {
+  //       projectId: pjId,
+  //       employeeId: emId,
+  //     })
+  //     .subscribe(
+  //       (response) => {
+  //         console.log(response);
+  //       },
+  //       (error) => {
+  //         console.log(error);
+  //       }
+  //     );
+  // }
 }

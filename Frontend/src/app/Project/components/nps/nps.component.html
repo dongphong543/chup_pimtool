@@ -53,10 +53,9 @@
                     ? 'red'
                     : ''
               }"
-              (click)="changePjNum()"
+              
               autofocus
             />
-            <!-- (click)="changePjNum()" -->
 
             <div
               class="custom-alert-after-input"
@@ -103,9 +102,15 @@
             <input
               class="long-nps-input"
               formControlName="member"
+              [ngStyle]="{
+                'border-color':
+                  npsForm.get('member').errors?.memberNonExistError && isSubmitted
+                    ? 'red'
+                    : ''
+              }"
               list="members"
             />
-            <datalist id="members">
+            <!-- <datalist id="members">
               <option 
                 *ngFor="let mem of employees$ | async"
                 [value]="mem.visa"
@@ -113,16 +118,16 @@
               >
                 {{ mem.firstName }} {{ mem.lastName }}
               </option>
-            </datalist>
+            </datalist> -->
 
             <div
               class="custom-alert-after-input"
-              *ngIf="memberNotFound$ | async as memNotFound"
+              *ngIf="(npsForm.get('member').errors?.memberNonExistError) && isSubmitted"
             >
-              {{ "pj-num-error" | translate }} {{ memNotFound }}
+            {{ 'pj-mem-error' | translate }} {{ nonExistEmployees$ | async }}
             </div>
           </div>
-
+          
           <div class="new-project-row">
             <span class="label">{{ "status" | translate }} </span>
             <span class="red">*</span>
