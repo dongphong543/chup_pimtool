@@ -113,7 +113,7 @@ export class NPSComponent implements OnInit {
       {
         pjNum: new FormControl(
           { value: "", disabled: this.nowInEPS },
-          [Validators.required, Validators.max(9999)],
+          [Validators.required, Validators.min(1), Validators.max(9999)],
           [existPjNumValidator(this.service)]
         ),
         name: new FormControl("", [Validators.required, Validators.maxLength(50)]),

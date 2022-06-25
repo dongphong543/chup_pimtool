@@ -9,7 +9,6 @@ import { map } from "rxjs/operators";
 export function existPjNumValidator(service): AsyncValidatorFn {
   return (control: AbstractControl): Observable<ValidationErrors | null> => {
     const pjNum = control.value;
-    if (pjNum.length > 4) return of(null);
 
     return service
       .checkProjectByPjNum(parseInt(pjNum))

@@ -93,38 +93,23 @@ export class PIMService {
     // );
   }
 
-  sortByColumn(
-    list: any[] | undefined,
-    column: string,
-    direction = "desc"
-  ): any[] {
-    // let sortedArray = list;
-    // console.log(list)
-    let sortedArray = (list || []).sort((a, b) => {
-      if (a[column] > b[column]) {
-        return direction === "desc" ? 1 : -1;
-      }
-      if (a[column] < b[column]) {
-        return direction === "desc" ? -1 : 1;
-      }
-      return 0;
-    });
-    return sortedArray;
-  }
-
-  // postProjectEmployee(pjId: number, emId: number) {
-  //   this.httpClient
-  //     .post(this.localUrl + "/ProjectEmployee", {
-  //       projectId: pjId,
-  //       employeeId: emId,
-  //     })
-  //     .subscribe(
-  //       (response) => {
-  //         console.log(response);
-  //       },
-  //       (error) => {
-  //         console.log(error);
-  //       }
-  //     );
+  // sortByColumn(
+  //   list: any[] | undefined,
+  //   column: string,
+  //   direction = "desc"
+  // ): any[] {
+  //   // let sortedArray = list;
+  //   // console.log(list)
+  //   let sortedArray = (list || []).sort((a, b) => {
+  //     if (a[column] > b[column]) {
+  //       return direction === "desc" ? 1 : -1;
+  //     }
+  //     if (a[column] < b[column]) {
+  //       return direction === "desc" ? -1 : 1;
+  //     }
+  //     return 0;
+  //   });
+  //   return sortedArray;
   // }
+
 }

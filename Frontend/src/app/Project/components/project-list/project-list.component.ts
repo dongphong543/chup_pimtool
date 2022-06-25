@@ -77,11 +77,7 @@ export class ProjectListComponent {
     //   )
     // );
     // this.sortOn("projectNumber");
-    this.projects$.subscribe((response) => (this.projectsArr = response));
-
-    
-
-    
+    this.projects$.subscribe((response) => (this.projectsArr = response));   
   }
 
   sortOn(column: string) {
@@ -170,7 +166,7 @@ export class ProjectListComponent {
     //   this.searchProjectByStatus(this.searchStatus);
     // }
     this.projects$ = this.service.getProjects(this.searchForm.get('searchText').value, this.searchForm.get('searchStatus').value);
-
+    this.projects$.subscribe((response) => {this.projectsArr = response; this.checkboxCount = 0;}); 
   }
 
   // searchProjectByStatus(i: string) {
