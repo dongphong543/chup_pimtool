@@ -1,10 +1,11 @@
 import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 // import * as Errors from "../../../Error/error-declaration";
-import { PIMService } from "../pim.service";
+import { PIMService } from "../../services/pim.service";
 import { Observable, combineLatest, BehaviorSubject } from "rxjs";
 import { filter, map, scan } from "rxjs/operators";
 import { Router } from "@angular/router";
+import { FormControl, FormGroup } from "@angular/forms";
 
 export class Project {
   constructor(
@@ -32,16 +33,8 @@ export class ProjectListComponent {
   projectsArr: Project[];
   projects$: Observable<any>;
   sortedColumn$ = new BehaviorSubject<string>("");
-  sortDirection$ = this.sortedColumn$.pipe(
-    scan<string, { col: string; dir: string }>(
-      (sort, val) => {
-        return sort.col === val
-          ? { col: val, dir: sort.dir === "desc" ? "asc" : "desc" }
-          : { col: val, dir: "desc" };
-      },
-      { dir: "desc", col: "" }
-    )
-  );
+  searchForm: FormGroup;
+  sortDirection$: Observable<any>;
 
   searchText: string = "";
   searchStatus: string = "";
@@ -51,16 +44,44 @@ export class ProjectListComponent {
   constructor(private service: PIMService, private router: Router) { }
 
   ngOnInit(): void {
-    this.projects$ = combineLatest(
-      this.service.getProjects(),
-      this.sortDirection$
-    ).pipe(
-      map(([list, sort]) =>
-        !sort.col ? list : this.service.sortByColumn(list, sort.col, sort.dir)
-      )
+    this.searchForm = new FormGroup(
+      {
+        searchText: new FormControl(""),
+        searchStatus: new FormControl("")
+      }
     );
-    this.sortOn("projectNumber");
+
+    this.searchForm.patchValue({
+      searchText: localStorage.getItem("searchTextCriteria"),
+      searchStatus: localStorage.getItem("searchStatusCriteria")
+    });
+
+    this.projects$ = this.service.getProjects(this.searchForm.get('searchText').value, this.searchForm.get('searchStatus').value);
+    // this.sortDirection$ = this.sortedColumn$.pipe(
+    //   scan<string, { col: string; dir: string }>(
+    //     (sort, val) => {
+    //       return sort.col === val
+    //         ? { col: val, dir: sort.dir === "desc" ? "asc" : "desc" }
+    //         : { col: val, dir: "desc" };
+    //     },
+    //     { dir: "desc", col: "" }
+    //   )
+    // );
+    
+    // this.projects$ = combineLatest(
+    //   this.service.getProjects(),
+    //   this.sortDirection$
+    // ).pipe(
+    //   map(([list, sort]) =>
+    //     !sort.col ? list : this.service.sortByColumn(list, sort.col, sort.dir)
+    //   )
+    // );
+    // this.sortOn("projectNumber");
     this.projects$.subscribe((response) => (this.projectsArr = response));
+
+    
+
+    
   }
 
   sortOn(column: string) {
@@ -95,7 +116,7 @@ export class ProjectListComponent {
         }
 
         if (confirm("Are you sure you want to delete this project?")) {
-          this.service.deleteProject(id).subscribe();
+          this.service.deleteProject([id]).subscribe();
           console.log("Deleted");
         } else {
           console.log("Not deleted");
@@ -116,11 +137,15 @@ export class ProjectListComponent {
               return;
             }
           }
+          let delArr: number[] = [];
           this.projectsArr.forEach((i) => {
             if (i.checkbox) {
-              this.service.deleteProject(i.id).subscribe();
+              // this.service.deleteProject(i.id).subscribe();
+              delArr.push(i.id);
             }
           });
+          this.service.deleteProject(delArr).subscribe();
+
         }
         // window.location.reload();
       }
@@ -132,12 +157,8 @@ export class ProjectListComponent {
   // }
 
   searchProject() {
-    this.searchText = (<HTMLInputElement>(
-      document.getElementById("textSelect")
-    )).value;
-    this.searchStatus = (<HTMLInputElement>(
-      document.getElementById("statusSelect")
-    )).value;
+    localStorage.setItem("searchTextCriteria", this.searchForm.controls.searchText.value);
+    localStorage.setItem("searchStatusCriteria", this.searchForm.controls.searchStatus.value);
 
     // this.projects$ = this.projects$.pipe(filter(pjs => pjs.projectNumber == 1200))
     // this.projects$.subscribe(r => console.log(r))
@@ -148,6 +169,8 @@ export class ProjectListComponent {
     // if (this.searchStatus.length > 0) {
     //   this.searchProjectByStatus(this.searchStatus);
     // }
+    this.projects$ = this.service.getProjects(this.searchForm.get('searchText').value, this.searchForm.get('searchStatus').value);
+
   }
 
   // searchProjectByStatus(i: string) {
@@ -193,6 +216,8 @@ export class ProjectListComponent {
     // // return;
     // this.projects$ = this.service.getProjects();
     // this.sortOn('projectNumber');
+    localStorage.setItem("searchTextCriteria", "");
+    localStorage.setItem("searchStatusCriteria", "");
     window.location.reload();
   }
 }

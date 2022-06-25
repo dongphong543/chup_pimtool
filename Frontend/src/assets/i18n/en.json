@@ -18,8 +18,8 @@
   "status": "Status",
   "start-date": "Start date",
   "delete": "Delete",
-  "item-selected": "item selected",
-  "items-selected": "items selected",
+  "1-item-selected": "{{n}} item selected",
+  "n-items-selected": "{{n}} items selected",
   "delete-selected-item": "delete selected item",
   "delete-selected-items": "delete selected items",
 

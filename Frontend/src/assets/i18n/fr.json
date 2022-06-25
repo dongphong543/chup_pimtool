@@ -18,8 +18,8 @@
   "status": "Statut",
   "start-date": "Date de Début",
   "delete": "Supprimer",
-  "item-selected": "article sélectionné",
-  "items-selected": "articles sélectionnés",
+  "1-item-selected": "{{n}} article sélectionné",
+  "n-items-selected": "{{n}} articles sélectionnés",
   "delete-selected-item": "supprime l'élément sélectionné",
   "delete-selected-items": "supprimer les éléments sélectionnés",
 

@@ -3,15 +3,32 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, of } from "rxjs";
 import { catchError } from "rxjs/operators";
 
+
+// class ProjectAddDTO {
+//   project: any;
+//   memString: string;
+
+//   constructor(p: any, s: string) {
+//     this.project = p;
+//     this.memString= s;
+//   }
+// }
+
+
 @Injectable({
   providedIn: "root",
 })
+
 export class PIMService {
   constructor(public httpClient: HttpClient) {}
   localUrl: string = "https://localhost:44334/api";
 
-  getProjects(): Observable<any> {
-    return this.httpClient.get<any>(this.localUrl + "/Project");
+  getProjects(searchText: string, searchCriteria: string): Observable<any> {
+    var query = new URLSearchParams();
+    query.append("searchText", searchText);
+    query.append("searchCriteria", searchCriteria);
+    return this.httpClient.get(this.localUrl + "/Project?" + query.toString());
+    // return this.httpClient.get<any>(this.localUrl + "/Project");
   }
 
   getProjectByPjNum(pjNum: number): Observable<any> {
@@ -38,12 +55,17 @@ export class PIMService {
     return this.httpClient.post<any>(this.localUrl + "/Employee/exist", {VisaStr: mems});
   }
 
-  postProject(pj: any) {
-    return this.httpClient.post(this.localUrl + "/Project", pj);
+  postProject(pj: any, memString: string) {
+    return this.httpClient.post(this.localUrl + "/Project", {project: pj, memString: memString});
   }
 
-  putProject(pj: any) {
-    return this.httpClient.put(this.localUrl + "/Project/" + pj.id, pj)
+  putProject(pj: any, memString: string) {
+    // var query = new URLSearchParams();
+    // query.append("memString", memString);
+    // return this.httpClient.put(this.localUrl + "/Project?" + query.toString() , pj);
+
+    return this.httpClient.put(this.localUrl + "/Project", {project: pj, memString: memString});
+
     // .subscribe(
     //   (response) => {
     //     console.log("UPDATE")
@@ -55,12 +77,14 @@ export class PIMService {
     // );
   }
 
-  postProjectEmployee(pjNum: number, emVisa: string[]) {
-    return this.httpClient.post(this.localUrl + "/ProjectEmployee", {ProjectPjNum: pjNum, EmployeeVisa: emVisa})
-  }
+  // postProjectEmployee(pjNum: number, emVisa: string[]) {
+  //   return this.httpClient.post(this.localUrl + "/ProjectEmployee", {ProjectPjNum: pjNum, EmployeeVisa: emVisa})
+  // }
 
-  deleteProject(id: number) {
-    return this.httpClient.delete(this.localUrl + "/Project/" + id.toString())
+  deleteProject(ids: number[]) {
+    // return this.httpClient.delete(this.localUrl + "/Project/", ids)
+
+    return this.httpClient.request('DELETE', this.localUrl + "/Project/", {body: ids});
     // .pipe(
     //   catchError(e => {
     //     if (e) console.log(e.status);

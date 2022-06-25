@@ -49,11 +49,10 @@
               formControlName="pjNum"
               [ngStyle]="{
                 'border-color':
-                  npsForm.get('pjNum').errors?.existPjNumError && isSubmitted
+                  npsForm.get('pjNum').invalid && isSubmitted
                     ? 'red'
                     : ''
               }"
-              
               autofocus
             />
 
@@ -72,13 +71,26 @@
           <div class="new-project-row">
             <span class="label">{{ "project-name" | translate }} </span>
             <span class="red">*</span>
-            <input class="long-nps-input" formControlName="name" />
+            <input class="long-nps-input" formControlName="name" 
+            [ngStyle]="{
+              'border-color':
+                npsForm.get('name').invalid && isSubmitted
+                  ? 'red'
+                  : ''
+            }"
+            />
           </div>
 
           <div class="new-project-row">
             <span class="label">{{ "customer" | translate }} </span>
             <span class="red">*</span>
-            <input class="long-nps-input" formControlName="customer" />
+            <input class="long-nps-input" formControlName="customer" 
+            [ngStyle]="{
+              'border-color':
+                npsForm.get('customer').invalid && isSubmitted
+                  ? 'red'
+                  : ''
+            }"/>
           </div>
 
           <div class="new-project-row">
@@ -87,6 +99,12 @@
             <select
               class="dropdown-box short-nps-select"
               formControlName="group"
+              [ngStyle]="{
+                'border-color':
+                  npsForm.get('group').invalid && isSubmitted
+                    ? 'red'
+                    : ''
+              }"
             >
               <option
                 *ngFor="let pjL of projectLeaderName$ | async"
@@ -104,12 +122,13 @@
               formControlName="member"
               [ngStyle]="{
                 'border-color':
-                  npsForm.get('member').errors?.memberNonExistError && isSubmitted
+                  npsForm.get('member').invalid && isSubmitted
                     ? 'red'
                     : ''
               }"
               list="members"
             />
+
             <!-- <datalist id="members">
               <option 
                 *ngFor="let mem of employees$ | async"
@@ -122,7 +141,7 @@
 
             <div
               class="custom-alert-after-input"
-              *ngIf="(npsForm.get('member').errors?.memberNonExistError) && isSubmitted"
+              *ngIf="(npsForm.get('member').invalid) && isSubmitted"
             >
             {{ 'pj-mem-error' | translate }} {{ nonExistEmployees$ | async }}
             </div>
@@ -134,6 +153,12 @@
             <select
               class="dropdown-box short-nps-select"
               formControlName="status"
+              [ngStyle]="{
+                'border-color':
+                  npsForm.get('status').invalid && isSubmitted
+                    ? 'red'
+                    : ''
+              }"
             >
               <option *ngFor="let st of statuses" [value]="st.code">
                 {{ st.name }}
@@ -149,6 +174,12 @@
                 class="short-nps-input"
                 type="date"
                 formControlName="startDate"
+                [ngStyle]="{
+                  'border-color':
+                    npsForm.get('startDate').invalid && isSubmitted
+                      ? 'red'
+                      : ''
+                }"
               />
 
               <span style="margin-left: 410px">

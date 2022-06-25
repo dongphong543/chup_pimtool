@@ -104,6 +104,12 @@ td {
   color: #666666;
 }
 
+.table th {
+  height: 32px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
 table td:nth-child(1) {
   text-align: center;
 }

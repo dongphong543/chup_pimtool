@@ -16,14 +16,17 @@
 
       <span style="margin-left: -15px">
         <span>
-          <form>
+          <form 
+            [formGroup]="searchForm"
+            (ngSubmit)="searchProject()"
+          >
             <input
               class="text-input"
               type="text"
-              id="textSelect"
+              formControlName="searchText"
               placeholder="{{ 'search-placeholder' | translate }}"
             />
-            <select class="dropdown-box" id="statusSelect">
+            <select class="dropdown-box" formControlName="searchStatus">
               <option value=""></option>
               <option value="PLA">{{ "planned" | translate }}</option>
               <option value="NEW">{{ "new" | translate }}</option>
@@ -52,7 +55,6 @@
                 <th
                   scope="col"
                   style="width: 7%"
-                  (click)="sortOn('projectNumber')"
                 >
                   {{ "number" | translate }}
                 </th>
@@ -76,10 +78,10 @@
                 *ngFor="
                   let pj of projects$
                     | async
-                    | filter: searchText
-                    | filter: searchStatus
                 "
               >
+              <!-- | filter: searchForm.controls.searchText.value
+              | filter: searchForm.controls.searchStatus.value -->
                 <td>
                   <input
                     type="checkbox"
@@ -114,10 +116,10 @@
           </table>
 
           <div class="n-item-selected border" *ngIf="checkboxCount > 1">
-            {{ checkboxCount }} items selected
+            {{ 'n-items-selected' | translate: {n: checkboxCount} }}
             <button class="delete-select-item" (click)="deleteCheckedProject()">
               <div>
-                <span style="padding-right: 10px"> delete selected items </span>
+                <span style="padding-right: 10px"> {{ 'delete-selected-items' | translate }} </span>
                 <span class="material-icons" style="position: absolute">
                   delete
                 </span>
@@ -126,10 +128,10 @@
           </div>
 
           <div class="n-item-selected border" *ngIf="checkboxCount == 1">
-            {{ checkboxCount }} item selected
+            {{ '1-item-selected' | translate: {n: checkboxCount} }}
             <button class="delete-select-item" (click)="deleteCheckedProject()">
               <div>
-                <span style="padding-right: 10px"> delete selected item </span>
+                <span style="padding-right: 10px"> {{ 'delete-selected-item' | translate }} </span>
                 <span class="material-icons" style="position: absolute">
                   delete
                 </span>

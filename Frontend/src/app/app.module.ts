@@ -24,6 +24,7 @@ import { ShellModule } from "./Shell/shell.module";
 import { ApiConfiguration } from "./swagger/api-configuration";
 import { EnvironmentApiConfiguration } from "./api-config";
 import { FormsModule } from "@angular/forms";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export function HttpLoaderFactory(http: HttpClient, loc: Location) {
   return new TranslateHttpLoader(
@@ -50,6 +51,7 @@ export function HttpLoaderFactory(http: HttpClient, loc: Location) {
     HttpClientModule,
     FormsModule,
     CommonModule,
+    BrowserAnimationsModule
   ],
   providers: [
     {

@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { PIMService } from "src/app/Project/components/pim.service";
+import { PIMService } from "src/app/Project/services/pim.service";
 
 export class Project {
   constructor(
@@ -13,7 +13,7 @@ export class Project {
     public status: string,
     public startDate: Date,
     public endDate: Date,
-    public version: number
+    public version: number,
   ) {}
 }
 
@@ -29,23 +29,20 @@ export class GridComponent {
   constructor(private service: PIMService) {}
 
   ngOnInit(): void {
-    this.getProjects();
+    // this.getProjects();
   }
 
-  getProjects() {
-    this.service.getProjects().subscribe((response) => {
-      // console.log(response);
-      this.projects = response;
-      this.projects.forEach((i) => {
-        // if (i.startDate) i.startDate = i.startDate.slice(0, 10).split('-').reverse().join('.');
-        // if (i.endDate) i.endDate = i.endDate.slice(0, 10).split('-').reverse().join('.');
-      });
-      this.projects.sort((a, b) => {
-        return a.projectNumber - b.projectNumber;
-      });
-      // console.log(this.projects);
-    });
-  }
+  // getProjects() {
+  //   this.service.getProjects().subscribe((response) => {
+  //     // console.log(response);
+  //     this.projects = response;
+  //     this.projects.forEach((i) => {
+  //     });
+  //     this.projects.sort((a, b) => {
+  //       return a.projectNumber - b.projectNumber;
+  //     });
+  //   });
+  // }
 
   searchProjectByText(i: number) {
     //  console.log("TEST" + i);
