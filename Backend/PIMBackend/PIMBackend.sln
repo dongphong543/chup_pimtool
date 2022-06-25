@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32428.217
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIMBackend", "PIMBackend\PIMBackend.csproj", "{CF7A9804-A3BD-4F3A-8C0B-AF4D6695C0FA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CF7A9804-A3BD-4F3A-8C0B-AF4D6695C0FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF7A9804-A3BD-4F3A-8C0B-AF4D6695C0FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF7A9804-A3BD-4F3A-8C0B-AF4D6695C0FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF7A9804-A3BD-4F3A-8C0B-AF4D6695C0FA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D61A4E1F-AD82-46DF-B225-8E14B394CFD0}
+	EndGlobalSection
+EndGlobal
