@@ -20,11 +20,6 @@ namespace PIMBackend.Controllers
         private readonly IMapper _mapper;
         private readonly IEmployeeService _employeeService;
 
-        //public EmployeeController(PIMContext context)
-        //{
-        //    _context = context;
-        //}
-
         public EmployeeController(IEmployeeService employeeService, IMapper mapper)
         {
             _employeeService = employeeService;
@@ -48,18 +43,14 @@ namespace PIMBackend.Controllers
         public string[] GetNonExistEmployee(MemStringDTO MemStringDTO)
         {
 
-            return _employeeService.GetExistEm(MemStringDTO.VisaStr, false);
+            return _employeeService.GetExistOrNotExistEmployeeArray(MemStringDTO.VisaStr, false);
 
         }
 
         [HttpPost("exist")]
         public string[] GetExistEmployee(MemStringDTO MemStringDTO)
         {
-
-            //return await GetExistEm(MemStringDTO, true);
-            //return _employeeService.GetExistEm(MemStringDTO.VisaStr);
-            return _employeeService.GetExistEm(MemStringDTO.VisaStr, true);
-
+            return _employeeService.GetExistOrNotExistEmployeeArray(MemStringDTO.VisaStr, true);
         }
 
 
@@ -87,140 +78,5 @@ namespace PIMBackend.Controllers
             _employeeService.Delete(id);
         }
 
-
-        //public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
-        //{
-        //    return await _context.Employees.ToListAsync();
-        //}
-
-
-
-
-        //public async Task<ActionResult<Employee>> GetEmployee(decimal id)
-        //{
-        //    var employee = await _context.Employees.FindAsync(id);
-
-        //    if (employee == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return employee;
-        //}
-
-
-
-
-
-
-
-        //public async Task<IActionResult> PutEmployee(int id, Employee Employee)
-        //{
-        //    if (id != Employee.Id)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    _context.Entry(Employee).State = EntityState.Modified;
-
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!EmployeeExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return NoContent();
-        //}
-
-
-
-
-
-
-
-
-        //public async Task<ActionResult<Employee>> PostEmployee(Employee Employee)
-        //{
-        //    _context.Employees.Add(Employee);
-        //    await _context.SaveChangesAsync();
-
-        //    return CreatedAtAction("GetEmployee", new { id = Employee.Id }, Employee);
-        //}
-
-
-
-
-        //public async Task<IActionResult> DeleteEmployee(int id)
-        //{
-        //    var Employee = await _context.Employees.FindAsync(id);
-        //    if (Employee == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _context.Employees.Remove(Employee);
-        //    await _context.SaveChangesAsync();
-
-        //    return NoContent();
-        //}
-
-        //private bool EmployeeExists(int id)
-        //{
-        //    return _context.Employees.Any(e => e.Id == id);
-
-        //}
-
-        //protected bool EmployeeExistsVisa(string visa)
-        //{
-        //    return _context.Employees.Any(e => e.Visa == visa);
-        //}
-
-        //protected internal async Task<string[]> GetExistEm(MemStringDTO memStringDTO, bool isExist = true)
-        //{
-        //    string VisaStr = memStringDTO.VisaStr;
-
-        //    List<string> ret = new List<string>();
-        //    List<string> visas = new List<string>();
-
-        //    if (VisaStr != null && VisaStr.Length > 0)
-        //    {
-        //        visas = VisaStr.Split(",").ToList<string>();
-
-        //        for (int i = 0; i < visas.Count; ++i)
-        //        {
-        //            visas[i] = visas[i].Trim();
-        //        }
-
-        //    }
-
-        //    visas = visas.Where(x => x != "").ToList();
-
-        //    for (int i = 0; i < visas.Count; ++i)
-        //    {
-        //        //var employee = await _context.Employees.FindAsync(Visas[i]);
-        //        List<Employee> employeeVisaLst = new List<Employee>();
-
-        //        employeeVisaLst = await _context.Employees.Where(x => x.Visa.ToUpper() == visas[i]).ToListAsync();
-
-        //        if (employeeVisaLst.Count > 0 == isExist)
-        //        {
-        //            ret.Add(visas[i].ToUpper());
-        //        }
-
-
-        //    }
-
-        //    return ret.ToArray();
-        //}
     }
 }

@@ -20,6 +20,7 @@ export class Project {
 @Component({
   selector: "pim-grid",
   templateUrl: "./grid.component.html",
+  styleUrls: ["./grid.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GridComponent {

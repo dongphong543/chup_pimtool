@@ -11,7 +11,7 @@ namespace PIMBackend.DTOs
 
         public MemStringDTO()
         {
-            this.VisaStr = "abc";
+            this.VisaStr = "";
         }
 
         public MemStringDTO(string s)

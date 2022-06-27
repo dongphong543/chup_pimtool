@@ -11,6 +11,7 @@ using PIMBackend.Database;
 using PIMBackend.Domain.Entities;
 using PIMBackend.DTOs;
 using PIMBackend.Errors;
+using PIMBackend.Repositories;
 using PIMBackend.Services;
 
 namespace PIMBackend.Controllers
@@ -19,12 +20,6 @@ namespace PIMBackend.Controllers
     [ApiController]
     public class ProjectController : ControllerBase
     {
-        //private readonly PIMContext _context;
-
-        //public ProjectController(PIMContext context)
-        //{
-        //    _context = context;
-        //}
 
         private readonly IMapper _mapper;
         private readonly IProjectService _projectService;
@@ -34,13 +29,8 @@ namespace PIMBackend.Controllers
             _projectService = projectService;
             _mapper = mapper;
         }
-        // GET: api/Project
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<Project>>> GetProjects()
-        //{
-        //    return await _context.Projects.Include(p => p.Employees).ToListAsync();
-        //}
 
+        // GET: api/Project
         [HttpGet]
         public IEnumerable<ProjectDTO> Get(string searchText, string searchCriteria)
         {
@@ -56,18 +46,6 @@ namespace PIMBackend.Controllers
             return _mapper.Map<Project, ProjectDTO>(_projectService.Get(id));
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Project>> GetProject(decimal id)
-        //{
-        //    var Project = await _context.Projects.FindAsync(id);
-
-        //    if (Project == null)
-        //    {
-        //        throw new IdNotExistException();
-        //    }
-
-        //    return Project;
-        //}
 
         [HttpGet("pjNum/{pjNum}")]
         public ProjectDTO GetByPjNum(decimal pjNum)
@@ -75,48 +53,23 @@ namespace PIMBackend.Controllers
             return _mapper.Map<Project, ProjectDTO>(_projectService.GetByPjNum(pjNum));
         }
 
-        //[HttpGet("pjNum/{pjNum}")]
-        //public async Task<ActionResult<Project>> GetProjectByPjNum(decimal pjNum)
-        //{
-        //    var Project = await _context.Projects.Where(x => x.ProjectNumber == pjNum).ToListAsync();
-
-        //    if (Project == null || Project.Count == 0)
-        //    {
-        //        throw new ProjectNumberNotExistsException();
-        //    }
-
-        //    return Project[0];
-        //}
-
         [HttpPost("exist")]
-        public bool CheckProjectByPjNums(decimal[] pjNums)
+        public bool ProjectNumbersExist(decimal[] pjNums)
         {
-            ProjectDTO project = null;
-
-            try
-            {
-                for (int i = 0; i < pjNums.Length; ++i)
-                {
-                    project = GetByPjNum(pjNums[i]);
-                }
-                
-            }
             
-            catch (ProjectNumberNotExistsException)
+            for (int i = 0; i < pjNums.Length; ++i)
             {
-                return false;
-            }
-
-            if (project == null)
-            {
-                return false;
+                if (_projectService.ProjectNumberExists(pjNums[i]) == false)
+                {
+                    return false;
+                }
             }
 
             return true;
         }
 
         [HttpPost("deletable")]
-        public bool CheckDeletableByPjNums(decimal[] pjNums)
+        public bool ProjectNumbersDeletable(decimal[] pjNums)
         {
             ProjectDTO project = null;
 
@@ -144,31 +97,16 @@ namespace PIMBackend.Controllers
         [HttpPut]
         public ProjectDTO PutProject(ProjectAddDTO obj)
         {
-            //ProjectDTO project, string memString
-            if (obj.memString == null || obj.memString.Length == 0)
-            {
-                return _mapper.Map<Project, ProjectDTO>(_projectService.Update(_mapper.Map<ProjectDTO, Project>(obj.project)));
-            }
-            else
-            {
-                return _mapper.Map<Project, ProjectDTO>(_projectService.UpdateWithMem(_mapper.Map<ProjectDTO, Project>(obj.project), obj.memString));
-            }
-            
+            return _mapper.Map<Project, ProjectDTO>(_projectService.Update(_mapper.Map<ProjectDTO, Project>(obj.project), obj.memString));
         }
 
         // POST: api/Project
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPost]
-        //public void Post(ProjectDTO employee)
-        //{
-        //    _projectService.Create(_mapper.Map<ProjectDTO, Project>(employee));
-        //    // if error throw exception
-        //}
-
+        
         [HttpPost]
         public void Post(ProjectAddDTO obj)
         {
-            if (obj.memString == null || obj.memString.Length == 0)
+            if (string.IsNullOrEmpty(obj.memString))
             {
                 _projectService.Create(_mapper.Map<ProjectDTO, Project>(obj.project));
             }

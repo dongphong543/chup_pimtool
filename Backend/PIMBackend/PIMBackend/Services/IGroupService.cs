@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using PIMBackend.Domain.Entities;
-using PIMBackend.Domain.Objects;
 
 namespace PIMBackend.Services
 {
@@ -10,8 +9,6 @@ namespace PIMBackend.Services
     public interface IGroupService
     {
         IEnumerable<Group> Get();
-
-        IEnumerable<Group> Get(Filter filter);
 
         Group Get(decimal id);
 

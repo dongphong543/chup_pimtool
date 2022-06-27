@@ -20,7 +20,7 @@ namespace PIMBackend.Repositories.Imp
             return Set.SingleOrDefault(x => x.Visa == visa);
         }
 
-        public string[] GetExistEm(string memString, bool isExist = true)
+        public string[] GetExistOrNotExistEmployeeArray(string memString, bool isExist = true)
         {
             List<string> ret = new List<string>();
             List<string> visas = new List<string>();
@@ -36,22 +36,14 @@ namespace PIMBackend.Repositories.Imp
 
             }
 
-            visas = visas.Where(x => x != "").ToList();
+            visas = visas.Where(x => string.IsNullOrEmpty(x) == false).ToList();
 
             for (int i = 0; i < visas.Count; ++i)
             {
-                //var employee = await _context.Employees.FindAsync(Visas[i]);
-                //List<Employee> employeeVisaLst = new List<Employee>();
-
-                //employeeVisaLst = await _context.Employees.Where(x => x.Visa.ToUpper() == visas[i]).ToListAsync();
-                Employee employee = GetByVisa(visas[i]);
-
-                if ((employee != null) == isExist)
+                if (Set.Any<Employee>(e => e.Visa == visas[i]) == isExist)
                 {
                     ret.Add(visas[i].ToUpper());
                 }
-
-
             }
 
             return ret.Distinct().ToArray();

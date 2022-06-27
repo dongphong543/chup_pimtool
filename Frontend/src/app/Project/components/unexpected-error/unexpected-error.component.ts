@@ -13,5 +13,6 @@ export class UnexpectedErrorComponent implements OnInit {
 
   returnHome() {
     window.location.assign("/");
+    // use this to reload from beginning instead of router.navigate()
   }
 }

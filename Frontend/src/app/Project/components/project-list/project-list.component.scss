@@ -110,17 +110,19 @@ td {
   padding-bottom: 0px;
 }
 
-table td:nth-child(1) {
-  text-align: center;
-}
+table td {
+  &:nth-child(1) {
+    text-align: center;
+  }
 
-table td:nth-child(2) {
-  text-align: end;
-}
+  &:nth-child(2) {
+    text-align: end;
+  }
 
-table td:nth-child(7) {
-  text-align: center;
-  color: rgb(204, 5, 5);
+  &:nth-child(7) {
+    text-align: center;
+    color: rgb(204, 5, 5);
+  }
 }
 
 .delete-column-button {

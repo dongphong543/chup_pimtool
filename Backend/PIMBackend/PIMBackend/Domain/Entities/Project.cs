@@ -13,8 +13,6 @@ namespace PIMBackend.Domain.Entities
         {
             Employees = new HashSet<Employee>();
         }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public override decimal Id { get; set; }
         public decimal GroupId { get; set; }
         public decimal ProjectNumber { get; set; }

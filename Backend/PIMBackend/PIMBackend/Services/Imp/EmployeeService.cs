@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using PIMBackend.Domain.Entities;
-using PIMBackend.Domain.Objects;
 using PIMBackend.Errors;
 using PIMBackend.Repositories;
 
@@ -26,18 +25,9 @@ namespace PIMBackend.Services.Imp
             return _employeeRepository.Get();
         }
 
-        public IEnumerable<Employee> Get(Filter filter)
-        {
-            return _employeeRepository.Get();
-        }
-
         public Employee Get(decimal id)
         {
             var ret = _employeeRepository.Get().SingleOrDefault(x => x.Id == id);
-            //if (ret == null)
-            //{
-            //    throw new IdNotExistException();
-            //}
 
             return ret;
         }
@@ -71,7 +61,7 @@ namespace PIMBackend.Services.Imp
             var employeeDb = _employeeRepository.Get(employee.Id);
             if (employeeDb == null)
             {
-                throw new ArgumentException();
+                throw new IdNotExistException();
             }
 
             if (employee.Version != employeeDb.Version)
@@ -106,9 +96,9 @@ namespace PIMBackend.Services.Imp
             _employeeRepository.SaveChange();
         }
 
-        public string[] GetExistEm(string memString, bool isExist = true)
+        public string[] GetExistOrNotExistEmployeeArray(string memString, bool isExist = true)
         {
-            return _employeeRepository.GetExistEm(memString, isExist);
+            return _employeeRepository.GetExistOrNotExistEmployeeArray(memString, isExist);
         }
     }
 }

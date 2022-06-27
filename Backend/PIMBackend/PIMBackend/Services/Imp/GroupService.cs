@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using PIMBackend.Domain.Entities;
-using PIMBackend.Domain.Objects;
 using PIMBackend.Errors;
 using PIMBackend.Repositories;
 
@@ -26,10 +25,6 @@ namespace PIMBackend.Services.Imp
             return _groupRepository.Get().Include(g => g.GroupLeader);
         }
 
-        public IEnumerable<Group> Get(Filter filter)
-        {
-            return _groupRepository.Get();
-        }
 
         public Group Get(decimal id)
         {

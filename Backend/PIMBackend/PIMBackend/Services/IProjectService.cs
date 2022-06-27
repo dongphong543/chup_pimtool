@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using PIMBackend.Domain.Entities;
-using PIMBackend.Domain.Objects;
 
 namespace PIMBackend.Services
 {
@@ -11,8 +10,6 @@ namespace PIMBackend.Services
     {
         IEnumerable<Project> Get(string searchText, string searchCriteria);
 
-        IEnumerable<Project> Get(Filter filter);
-
         Project Get(decimal id);
 
         //used to return Project
@@ -20,10 +17,12 @@ namespace PIMBackend.Services
 
         void CreateWithMem(Project project, string memString);
 
-        Project Update(Project sample);
+        Project Update(Project project, string memString);
 
         void Delete(decimal[] pjNums);
         Project GetByPjNum(decimal pjNum);
-        Project UpdateWithMem(Project project, string memString);
+
+        bool ProjectNumberExists(decimal pjNum);
+
     }
 }

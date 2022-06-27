@@ -35,15 +35,6 @@ namespace PIMBackend.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<BaseEntity>(entity =>
-            //{
-            //    entity.HasKey(e => e.Id);
-            //    entity.Property(e => e.Id)
-            //        .ValueGeneratedOnAdd()
-            //        .HasColumnName("ID");
-            //});
-
-
             modelBuilder.Entity<Employee>(entity =>
             {
                 entity.ToTable("EMPLOYEE");
@@ -104,9 +95,6 @@ namespace PIMBackend.Database
                     .HasColumnType("numeric(10, 0)")
                     .HasColumnName("VERSION");
 
-                //entity.HasOne(d => d.GroupLeader)
-                //    .WithOne(p => p.Group)
-                //    .HasForeignKey<Group>(d => d.GroupLeaderId);
             });
 
             modelBuilder.Entity<Project>(entity =>
@@ -165,32 +153,6 @@ namespace PIMBackend.Database
                     .HasForeignKey(d => d.GroupId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
-
-            //modelBuilder.Entity<ProjectEmployee>(entity =>
-            //{
-            //    entity.HasKey(e => new { e.ProjectId, e.EmployeeId });
-
-            //    entity.ToTable("PROJECT_EMPLOYEE");
-
-            //    entity.Property(e => e.ProjectId)
-            //        .HasColumnType("numeric(19, 0)")
-            //        .HasColumnName("PROJECT_ID");
-
-            //    entity.Property(e => e.EmployeeId)
-            //        .HasColumnType("numeric(19, 0)")
-            //        .HasColumnName("EMPLOYEE_ID");
-
-            //    entity.HasOne(d => d.Employee)
-            //        .WithMany(p => p.ProjectEmployees)
-            //        .HasForeignKey(d => d.EmployeeId)
-            //        .OnDelete(DeleteBehavior.ClientSetNull);
-
-            //    entity.HasOne(d => d.Project)
-            //        .WithMany(p => p.ProjectEmployees)
-            //        .HasForeignKey(d => d.ProjectId)
-            //        .OnDelete(DeleteBehavior.ClientSetNull);
-            //});
-
 
             OnModelCreatingPartial(modelBuilder);
 

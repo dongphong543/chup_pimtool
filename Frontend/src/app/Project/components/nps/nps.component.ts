@@ -6,9 +6,9 @@ import { combineLatest, Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import { Project } from "../../../Base/components/grid/grid.component";
 import { BroadcastService } from "../../../Error/broadcast.service";
-import { dateValidator } from "../../directives/date-validator.directive";
-import { existPjNumValidator } from "../../directives/existed-pjNum-validator.directive";
-import { memberValidator } from "../../directives/member-validator.directive";
+import { dateValidator } from "../../validators/date-validator.directive";
+import { existPjNumValidator } from "../../validators/existed-pjNum-validator.directive";
+import { memberValidator } from "../../validators/member-validator.directive";
 import { PIMService } from "../../services/pim.service";
 
 @Component({

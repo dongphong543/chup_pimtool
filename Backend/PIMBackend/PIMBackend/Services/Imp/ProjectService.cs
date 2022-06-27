@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using PIMBackend.Domain.Entities;
-using PIMBackend.Domain.Objects;
+using PIMBackend.DTOs;
 using PIMBackend.Errors;
 using PIMBackend.Repositories;
 
@@ -21,26 +21,28 @@ namespace PIMBackend.Services.Imp
             _projectRepository = projectRepository;
         }
 
-        public IEnumerable<Project> Get(string searchText, string searchCriteria)
+        public IEnumerable<Project> Get(string searchText, string searchStatus)
         {
-            return _projectRepository.Get()
-                                        .Include(p => p.Employees)
-                                        .Where(p =>
-                                                (searchText == null || searchText == "") ||
-                                                ((p.ProjectNumber.ToString().Contains(searchText)) ||
-                                                (p.Name.Contains(searchText)) ||
-                                                (p.Customer.Contains(searchText)))
-                                        )
-                                        .Where(p =>
-                                                (searchCriteria == null || searchCriteria == "") ||
-                                                (p.Status.Contains(searchCriteria))
-                                        );
+            IQueryable<Project> query = _projectRepository.Get().Include(p => p.Employees);
+            if (string.IsNullOrEmpty(searchText) == false)
+            {
+                query = query.Where(p =>
+                                        p.ProjectNumber.ToString().Contains(searchText) ||
+                                        p.Name.Contains(searchText) ||
+                                        p.Customer.Contains(searchText)
+                                    );
+            }
+
+            if (string.IsNullOrEmpty(searchStatus) == false)
+            {
+                query = query.Where(p =>
+                                        (p.Status.Contains(searchStatus))
+                                    );
+            }
+
+            return query;
         }
 
-        public IEnumerable<Project> Get(Filter filter)
-        {
-            return _projectRepository.Get();
-        }
 
         public Project Get(decimal id)
         {
@@ -87,7 +89,7 @@ namespace PIMBackend.Services.Imp
         
         public void CreateWithMem(Project project, string memString)
         {
-            if (ProjectExistsByPjNum(project.ProjectNumber) == true)
+            if (ProjectNumberExists(project.ProjectNumber) == true)
             {
                 throw new ProjectNumberAlreadyExistsException();
             }
@@ -109,32 +111,27 @@ namespace PIMBackend.Services.Imp
             
         }
 
-        public Project Update(Project project)
-        {
-            return UpdateWithMem(project, "");
-        }
-
-        public Project UpdateWithMem(Project project, string memString)
+        public Project Update(Project project, string memString)
         {
             var projectDb = _projectRepository.Get().Include(projects => projects.Employees)
                 .SingleOrDefault(p => p.Id == project.Id);
 
             if (projectDb == null)
             {
-                throw new ArgumentException();
+                throw new IdNotExistException();
             }
 
             if (project.Version != projectDb.Version)
             {
                 throw new UpdateConflictException();
             }
-            
+
             ValidateForm(project);
-            
+
             if (project.ProjectNumber != projectDb.ProjectNumber)
             {
                 throw new FormInvalidException();
-            }       
+            }
 
             else
             {
@@ -147,7 +144,11 @@ namespace PIMBackend.Services.Imp
 
                 projectDb.Version += 1;
 
-                _projectRepository.UpdateWithMem(memString, projectDb);
+                if (string.IsNullOrEmpty(memString) == false)
+                {
+                    _projectRepository.UpdateWithMem(memString, projectDb);
+                }
+
             }
 
             try
@@ -186,34 +187,9 @@ namespace PIMBackend.Services.Imp
             _projectRepository.SaveChange();
         }
 
-        private bool ProjectExistsById(decimal id)
+        public bool ProjectNumberExists(decimal pjNum)
         {
-            bool ret;
-            try
-            {
-                ret = Get(id) != null;
-            }
-            catch (IdNotExistException)
-            {
-                return false;
-            }
-
-            return ret;
-        }
-
-        private bool ProjectExistsByPjNum(decimal pjNum)
-        {
-            bool ret;
-            try
-            {
-                ret = GetByPjNum(pjNum) != null;
-            }
-            catch (ProjectNumberNotExistsException)
-            {
-                return false;
-            }
-
-            return ret;
+            return _projectRepository.ProjectNumberExists(pjNum);
         }
     }
 }

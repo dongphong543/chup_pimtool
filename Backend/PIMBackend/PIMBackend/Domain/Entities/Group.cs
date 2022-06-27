@@ -14,7 +14,6 @@ namespace PIMBackend.Domain.Entities
             Projects = new HashSet<Project>();
         }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public override decimal Id { get; set; }
         public decimal GroupLeaderId { get; set; }
         public decimal Version { get; set; }

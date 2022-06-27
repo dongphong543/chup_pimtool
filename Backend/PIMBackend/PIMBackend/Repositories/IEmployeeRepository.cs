@@ -8,6 +8,6 @@ namespace PIMBackend.Repositories
     public interface IEmployeeRepository : IRepository<Employee>
     {
         public Employee GetByVisa(string visa);
-        string[] GetExistEm(string memString, bool isExist);
+        string[] GetExistOrNotExistEmployeeArray(string memString, bool isExist);
     }
 }

@@ -8,8 +8,6 @@ namespace PIMBackend.Domain.Entities
     /// </summary>
     public abstract class BaseEntity
     {
-        // it used to be not virtual:
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public virtual decimal Id { get; set; }
     }
 }

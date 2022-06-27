@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PIMBackend.DTOs
+namespace PIMBackend.ErrorHandler
 {
     public class ErrorDetails
     {
