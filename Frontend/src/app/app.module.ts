@@ -5,7 +5,6 @@ import {
   HttpInterceptor,
   HTTP_INTERCEPTORS,
 } from "@angular/common/http";
-// import { HttpErrorInterceptor } from './http-error.interceptor';
 import { HttpErrorInterceptorService } from "./Error/error-interceptor";
 
 import { NgModule } from "@angular/core";
@@ -24,7 +23,7 @@ import { ShellModule } from "./Shell/shell.module";
 import { ApiConfiguration } from "./swagger/api-configuration";
 import { EnvironmentApiConfiguration } from "./api-config";
 import { FormsModule } from "@angular/forms";
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 export function HttpLoaderFactory(http: HttpClient, loc: Location) {
   return new TranslateHttpLoader(
@@ -51,7 +50,7 @@ export function HttpLoaderFactory(http: HttpClient, loc: Location) {
     HttpClientModule,
     FormsModule,
     CommonModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
   ],
   providers: [
     {

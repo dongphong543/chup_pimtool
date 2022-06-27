@@ -9,7 +9,7 @@ import { UnexpectedErrorComponent } from "../Project/components/unexpected-error
 const routes: Routes = [
   { path: "list", component: ProjectListComponent },
   { path: "new", component: NPSComponent },
-  { path: "edit/:projectId", component: NPSComponent }
+  { path: "edit/:projectId", component: NPSComponent },
 ];
 
 @NgModule({

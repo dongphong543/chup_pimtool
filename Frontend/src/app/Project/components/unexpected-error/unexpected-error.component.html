@@ -8,9 +8,10 @@
       />
     </div>
     <div class="col-8 error-text">
-      <div>{{'error-screen-line1' | translate }}</div>
+      <div>{{ "error-screen-line1" | translate }}</div>
       <div class="error-message">
-        {{ broadcastService.err.value.status }} {{ broadcastService.err.value.statusText }}
+        {{ broadcastService.err.value.status }}
+        {{ broadcastService.err.value.statusText }}
       </div>
       <div class="error-message">
         {{ broadcastService.err.value.name }}
@@ -20,19 +21,19 @@
       </div>
       <div>
         <span>
-          {{'error-screen-line2.1' | translate}} 
+          {{ "error-screen-line2.1" | translate }}
         </span>
         <span class="error-text-red">
-          {{'error-screen-line2.2' | translate}}
+          {{ "error-screen-line2.2" | translate }}
         </span>
       </div>
       <div>
         <span>
-          {{'error-screen-line3.1' | translate}}
+          {{ "error-screen-line3.1" | translate }}
         </span>
         <button class="transparent" routerLink="/">
           <span class="error-text-blue">
-            {{'error-screen-line3.2' | translate}}
+            {{ "error-screen-line3.2" | translate }}
           </span>
         </button>
       </div>

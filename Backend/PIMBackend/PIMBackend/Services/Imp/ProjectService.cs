@@ -87,9 +87,9 @@ namespace PIMBackend.Services.Imp
         
         public void CreateWithMem(Project project, string memString)
         {
-            if (ProjectExistsByPjNum(project.Id) == true)
+            if (ProjectExistsByPjNum(project.ProjectNumber) == true)
             {
-                throw new IdAlreadyExistException();
+                throw new ProjectNumberAlreadyExistsException();
             }
 
             

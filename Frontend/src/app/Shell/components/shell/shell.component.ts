@@ -8,12 +8,12 @@ import { TranslateService } from "@ngx-translate/core";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShellComponent {
-  constructor(private translate: TranslateService) {
-    // trans.addLangs(["en", "fr"]);
-    // trans.setDefaultLang("en");
-  }
+  isEn: boolean = true;
+
+  constructor(private translate: TranslateService) {}
 
   setLanguage(lang: string) {
     this.translate.use(lang);
+    this.isEn = lang == "en";
   }
 }

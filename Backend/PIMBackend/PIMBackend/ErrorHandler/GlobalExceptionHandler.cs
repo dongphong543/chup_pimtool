@@ -26,13 +26,13 @@ namespace PIMBackend.ErrorHandler
                     if (contextFeature != null)
                     {
                         var logger = app.ApplicationServices.GetRequiredService<ILogger<Startup>>();
-                        logger.LogError($"Co cai loi gi o day ne! {contextFeature.Error}");
+                        logger.LogError($"Some errors happened! {contextFeature.Error}");
 
                         await context.Response.WriteAsync(new ErrorDetails()
                         {
                             StatusCode = context.Response.StatusCode,
                             //Message = context.Response.ToString()
-                            Message = "Bad request. Check the conditions again."
+                            Message = context.Response.Body.ToString()
                         }.ToString());
                     }
                 });

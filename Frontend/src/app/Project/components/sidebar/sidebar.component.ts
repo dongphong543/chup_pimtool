@@ -9,7 +9,4 @@ export class SidebarComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {}
-
-  // styleString = "color: #333333; font-weight: 600;";
-  
 }

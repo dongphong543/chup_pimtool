@@ -10,7 +10,6 @@ const routes: Routes = [
       import("./Project/project.module").then((m) => m.ProjectModule),
   },
 
-  
   { path: "error", component: UnexpectedErrorComponent },
   { path: "**", redirectTo: "/pim/list", pathMatch: "full" },
 ];

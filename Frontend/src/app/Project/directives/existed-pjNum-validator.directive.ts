@@ -3,7 +3,7 @@ import {
   AsyncValidatorFn,
   ValidationErrors,
 } from "@angular/forms";
-import { Observable, of } from "rxjs";
+import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 export function existPjNumValidator(service): AsyncValidatorFn {
@@ -12,6 +12,6 @@ export function existPjNumValidator(service): AsyncValidatorFn {
 
     return service
       .checkProjectByPjNum(parseInt(pjNum))
-      .pipe(map((res) => (res == true ? { existPjNumError: true } : null)))
+      .pipe(map((res) => (res == true ? { existPjNumError: true } : null)));
   };
 }

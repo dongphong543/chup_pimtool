@@ -6,7 +6,7 @@
 <div style="width: 80%; margin-left: 10%">
   <div class="row" style="margin-top: -15px">
     <div class="col-2 border-right">
-      <sidebar></sidebar>
+      <sidebar screenName="project-name"></sidebar>
     </div>
 
     <div class="col-9" style="margin-top: 50px; margin-left: 50px">
@@ -16,10 +16,7 @@
 
       <span style="margin-left: -15px">
         <span>
-          <form 
-            [formGroup]="searchForm"
-            (ngSubmit)="searchProject()"
-          >
+          <form [formGroup]="searchForm" (ngSubmit)="searchProject()">
             <input
               class="text-input"
               type="text"
@@ -28,10 +25,10 @@
             />
             <select class="dropdown-box" formControlName="searchStatus">
               <option value=""></option>
-              <option value="PLA">{{ "planned" | translate }}</option>
-              <option value="NEW">{{ "new" | translate }}</option>
-              <option value="INP">{{ "in-progress" | translate }}</option>
-              <option value="FIN">{{ "finished" | translate }}</option>
+              <option value="NEW">{{ "New" | translate }}</option>
+              <option value="PLA">{{ "Planned" | translate }}</option>
+              <option value="INP">{{ "In-progress" | translate }}</option>
+              <option value="FIN">{{ "Finished" | translate }}</option>
             </select>
 
             <button class="btn-grad" (click)="searchProject()">
@@ -52,10 +49,7 @@
             <thead class="thead-white" style="height: 32px">
               <tr>
                 <th scope="col" style="width: 4%"></th>
-                <th
-                  scope="col"
-                  style="width: 7%"
-                >
+                <th scope="col" style="width: 7%">
                   {{ "number" | translate }}
                 </th>
                 <th scope="col" style="width: 31%">{{ "name" | translate }}</th>
@@ -74,13 +68,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="
-                  let pj of projects$
-                    | async
-                "
-              >
-              <!-- | filter: searchForm.controls.searchText.value
+              <tr *ngFor="let pj of projects$ | async">
+                <!-- | filter: searchForm.controls.searchText.value
               | filter: searchForm.controls.searchStatus.value -->
                 <td>
                   <input
@@ -116,10 +105,12 @@
           </table>
 
           <div class="n-item-selected border" *ngIf="checkboxCount > 1">
-            {{ 'n-items-selected' | translate: {n: checkboxCount} }}
+            {{ "n-items-selected" | translate: { n: checkboxCount } }}
             <button class="delete-select-item" (click)="deleteCheckedProject()">
               <div>
-                <span style="padding-right: 10px"> {{ 'delete-selected-items' | translate }} </span>
+                <span style="padding-right: 10px">
+                  {{ "delete-selected-items" | translate }}
+                </span>
                 <span class="material-icons" style="position: absolute">
                   delete
                 </span>
@@ -128,10 +119,12 @@
           </div>
 
           <div class="n-item-selected border" *ngIf="checkboxCount == 1">
-            {{ '1-item-selected' | translate: {n: checkboxCount} }}
+            {{ "1-item-selected" | translate: { n: checkboxCount } }}
             <button class="delete-select-item" (click)="deleteCheckedProject()">
               <div>
-                <span style="padding-right: 10px"> {{ 'delete-selected-item' | translate }} </span>
+                <span style="padding-right: 10px">
+                  {{ "delete-selected-item" | translate }}
+                </span>
                 <span class="material-icons" style="position: absolute">
                   delete
                 </span>

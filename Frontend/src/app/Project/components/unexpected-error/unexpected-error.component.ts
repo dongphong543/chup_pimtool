@@ -12,7 +12,6 @@ export class UnexpectedErrorComponent implements OnInit {
   ngOnInit(): void {}
 
   returnHome() {
-    // this.router.navigate(["/"]);
     window.location.assign("/");
   }
 }

@@ -14,19 +14,20 @@ import { BroadcastService } from "./broadcast.service";
   providedIn: "root",
 })
 export class HttpErrorInterceptorService implements HttpInterceptor {
-  constructor(public broadcastService: BroadcastService, private router: Router) {}
+  constructor(
+    public broadcastService: BroadcastService,
+    private router: Router
+  ) {}
   intercept(request: HttpRequest<any>, next: HttpHandler) {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        // console.log("Interceptor works. Code: " + error.status);
-        console.log(error)
-        // this.broadcastService.msg.next(error.message);
+        console.log(error);
         this.broadcastService.err.next(error);
 
         if (error.status.toString() != "400") {
           this.router.navigate(["/error"]);
         }
-        return throwError(error.error); 
+        return throwError(error.error);
       })
     );
   }

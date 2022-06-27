@@ -13,7 +13,7 @@ export class Project {
     public status: string,
     public startDate: Date,
     public endDate: Date,
-    public version: number,
+    public version: number
   ) {}
 }
 
@@ -23,29 +23,11 @@ export class Project {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GridComponent {
-  // projects: Observable<Project[]>;
   projects: Project[];
 
   constructor(private service: PIMService) {}
 
-  ngOnInit(): void {
-    // this.getProjects();
-  }
+  ngOnInit(): void {}
 
-  // getProjects() {
-  //   this.service.getProjects().subscribe((response) => {
-  //     // console.log(response);
-  //     this.projects = response;
-  //     this.projects.forEach((i) => {
-  //     });
-  //     this.projects.sort((a, b) => {
-  //       return a.projectNumber - b.projectNumber;
-  //     });
-  //   });
-  // }
-
-  searchProjectByText(i: number) {
-    //  console.log("TEST" + i);
-    // GridComponent.s
-  }
+  searchProjectByText(i: number) {}
 }

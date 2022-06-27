@@ -13,10 +13,3 @@ export const dateValidator: ValidatorFn = (
     ? { dateError: true }
     : null;
 };
-
-// <div    *ngIf="heroForm.errors?.['identityRevealed'] && (heroForm.touched || heroForm.dirty)"
-//         class="cross-validation-error-message alert alert-danger">
-//             Name cannot match alter ego.
-// </div>
-
-// https://angular.io/guide/form-validation#cross-field-validation

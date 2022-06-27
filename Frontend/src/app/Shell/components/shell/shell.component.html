@@ -31,9 +31,21 @@
   <span class="titleText"> {{ "app-title" | translate }} </span>
 
   <span class="link-small-blue lang-region">
-    <button class="link-small-blue" (click)="setLanguage('en')">EN</button>
-    <span> | </span>
-    <button class="link-small-blue" (click)="setLanguage('fr')">FR</button>
+    <button
+      class="link-small-blue"
+      (click)="setLanguage('en')"
+      [ngStyle]="{ color: isEn ? '#333333' : '#2f85fa' }"
+    >
+      EN
+    </button>
+    <span style="color: #333333"> | </span>
+    <button
+      class="link-small-blue"
+      (click)="setLanguage('fr')"
+      [ngStyle]="{ color: isEn ? '#2f85fa' : '#333333' }"
+    >
+      FR
+    </button>
   </span>
 
   <span class="get-right">

@@ -1,13 +1,24 @@
 <div id="sidebar">
-  <button class="link-big" type="button" routerLink="/pim/list">
+  <button
+    class="link-big"
+    type="button"
+    routerLink="/pim/list"
+    routerLinkActive="active-link"
+  >
+    <!-- [ngStyle]="{'color': screenName == 'project-list'? '#333333' : '#2f85fa'}" -->
     {{ "projects-list" | translate }}
   </button>
 </div>
 <div>
-  <span class="link-button">{{ "new" | translate }}</span>
+  <span class="link-button">{{ "New" | translate }}</span>
 </div>
 <div>
-  <button class="link-small-gray" type="button" routerLink="/pim/new">
+  <button
+    class="link-small-gray"
+    type="button"
+    routerLink="/pim/new"
+    routerLinkActive="active-link"
+  >
     {{ "project" | translate }}
   </button>
 </div>
