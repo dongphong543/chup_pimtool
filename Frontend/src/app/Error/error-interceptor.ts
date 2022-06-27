@@ -27,6 +27,10 @@ export class HttpErrorInterceptorService implements HttpInterceptor {
         if (error.status.toString() != "400") {
           this.router.navigate(["/error"]);
         }
+
+        else {
+          alert("HTTP STATUS 400: Bad Request!");
+        }
         return throwError(error.error);
       })
     );

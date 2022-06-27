@@ -88,19 +88,47 @@ namespace PIMBackend.Controllers
         //    return Project[0];
         //}
 
-        [HttpGet("exist/{pjNum}")]
-        public bool CheckProjectByPjNum(decimal pjNum)
+        [HttpPost("exist")]
+        public bool CheckProjectByPjNums(decimal[] pjNums)
         {
-            ProjectDTO project;
+            ProjectDTO project = null;
 
             try
             {
-                project = GetByPjNum(pjNum);
+                for (int i = 0; i < pjNums.Length; ++i)
+                {
+                    project = GetByPjNum(pjNums[i]);
+                }
+                
             }
             
-            catch (Exception)
+            catch (ProjectNumberNotExistsException)
             {
                 return false;
+            }
+
+            if (project == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        [HttpPost("deletable")]
+        public bool CheckDeletableByPjNums(decimal[] pjNums)
+        {
+            ProjectDTO project = null;
+
+            for (int i = 0; i < pjNums.Length; ++i)
+            {
+                project = GetByPjNum(pjNums[i]);
+            
+
+                if (project.Status != "NEW")
+                {
+                    return false;
+                }
             }
 
             if (project == null)
@@ -155,10 +183,9 @@ namespace PIMBackend.Controllers
 
         // DELETE: api/Employee/5
         [HttpDelete]
-        public void Delete(decimal[] ids)
+        public void Delete(decimal[] pjNums)
         {
-            _projectService.Delete(ids);
-            
+            _projectService.Delete(pjNums);
         }
     }
 }

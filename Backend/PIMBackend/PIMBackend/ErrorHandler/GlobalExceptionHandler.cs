@@ -31,8 +31,9 @@ namespace PIMBackend.ErrorHandler
                         await context.Response.WriteAsync(new ErrorDetails()
                         {
                             StatusCode = context.Response.StatusCode,
-                            //Message = context.Response.ToString()
+                            //Message = context.Messa.ToString()
                             Message = context.Response.Body.ToString()
+                            //Message = contextFeature.GetType().ToString()
                         }.ToString());
                     }
                 });

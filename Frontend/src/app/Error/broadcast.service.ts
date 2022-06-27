@@ -8,7 +8,6 @@ export class BroadcastService {
   public err: BehaviorSubject<any>;
 
   constructor() {
-    //initialize it to empty
     this.err = new BehaviorSubject<any>("");
   }
 }

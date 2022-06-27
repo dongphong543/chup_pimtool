@@ -22,7 +22,7 @@ namespace PIMBackend.Services
 
         Project Update(Project sample);
 
-        void Delete(decimal[] ids);
+        void Delete(decimal[] pjNums);
         Project GetByPjNum(decimal pjNum);
         Project UpdateWithMem(Project project, string memString);
     }

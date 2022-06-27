@@ -2,7 +2,7 @@ import { Location } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { combineLatest, Observable } from "rxjs";
+import { combineLatest, Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import { Project } from "../../../Base/components/grid/grid.component";
 import { BroadcastService } from "../../../Error/broadcast.service";
@@ -86,7 +86,7 @@ export class NPSComponent implements OnInit {
       {
         validators: [dateValidator],
         asyncValidators: [],
-        updateOn: "change",
+        updateOn: "change"
       }
     );
 
@@ -108,6 +108,13 @@ export class NPSComponent implements OnInit {
           this.pjId = response.id;
           this.pjVersion = response.version;
         });
+    }
+    else {
+      if (localStorage.getItem("projectForm") != null) {
+        of(localStorage.getItem("projectForm")).subscribe(
+          response => this.npsForm.patchValue(JSON.parse(response))
+        );
+      }  
     }
 
     this.projectLeaderName$ = combineLatest([
@@ -151,10 +158,19 @@ export class NPSComponent implements OnInit {
 
     if (this.nowInEPS == false) delete this.pj.id;
 
-    console.log(this.pj);
+    // console.log(this.pj);
+    localStorage.removeItem("projectForm");
 
     if (this.nowInEPS == false) this.addProject();
     else this.editProject();
+  }
+
+  onCancel() {
+    if (this.nowInEPS == false) {
+      localStorage.setItem("projectForm", JSON.stringify(this.npsForm.value));
+    }
+
+    this.router.navigate(["/"]);
   }
 
   addProject() {

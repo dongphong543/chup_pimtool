@@ -59,7 +59,7 @@ namespace PIMBackend.Services.Imp
             {
                 throw new ProjectNumberNotExistsException();
             }
-            return _projectRepository.Get().SingleOrDefault(x => x.ProjectNumber == pjNum);
+            return ret;
         }
         
         private void ValidateForm(Project project)
@@ -162,11 +162,14 @@ namespace PIMBackend.Services.Imp
             return projectDb;
         }
 
-        public void Delete(decimal[] ids)
+        public void Delete(decimal[] pjNums)
         {
-            for (int i = 0; i < ids.Length; ++i)
+            
+            List<decimal> ids = new List<decimal>();
+
+            for (int i = 0; i < pjNums.Length; ++i)
             {
-                var project = _projectRepository.Get(ids[i]);
+                var project = GetByPjNum(pjNums[i]);
                 if (project == null)
                 {
                     throw new UpdateConflictException();
@@ -174,10 +177,12 @@ namespace PIMBackend.Services.Imp
                 if (project.Status != "NEW")
                 {
                     throw new StatusInvalidException();
+                    //return StatusCodes.Status412PreconditionFailed;
                 }
+                ids.Add(project.Id);
             }
 
-            _projectRepository.Delete(ids);
+            _projectRepository.Delete(ids.ToArray());
             _projectRepository.SaveChange();
         }
 

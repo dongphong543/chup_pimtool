@@ -76,7 +76,7 @@
                     type="checkbox"
                     style="width: 15px; height: 15px"
                     id="{{ pj.projectNumber }}checkbox"
-                    (change)="changedCheckbox(pj.projectNumber)"
+                    (change)="changedCheckbox(pj.projectNumber, $event.target.checked)"
                   />
                 </td>
                 <td>
@@ -104,8 +104,8 @@
             </tbody>
           </table>
 
-          <div class="n-item-selected border" *ngIf="checkboxCount > 1">
-            {{ "n-items-selected" | translate: { n: checkboxCount } }}
+          <div class="n-item-selected border" *ngIf="checkedPjNum.length > 1">
+            {{ "n-items-selected" | translate: { n: checkedPjNum.length } }}
             <button class="delete-select-item" (click)="deleteCheckedProject()">
               <div>
                 <span style="padding-right: 10px">
@@ -118,8 +118,8 @@
             </button>
           </div>
 
-          <div class="n-item-selected border" *ngIf="checkboxCount == 1">
-            {{ "1-item-selected" | translate: { n: checkboxCount } }}
+          <div class="n-item-selected border" *ngIf="checkedPjNum.length == 1">
+            {{ "1-item-selected" | translate: { n: checkedPjNum.length } }}
             <button class="delete-select-item" (click)="deleteCheckedProject()">
               <div>
                 <span style="padding-right: 10px">

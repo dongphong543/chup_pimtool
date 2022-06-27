@@ -28,8 +28,16 @@ export class PIMService {
     return this.httpClient.get<any>(this.localUrl + "/Group");
   }
 
-  checkProjectByPjNum(pjNum: number): Observable<any> {
-    return this.httpClient.get<any>(this.localUrl + "/Project/exist/" + pjNum);
+  checkProjectByPjNums(pjNums: number[]): Observable<any> {
+    return this.httpClient.request("POST", this.localUrl + "/Project/exist/", {
+      body: pjNums,
+    });
+  }
+
+  checkDeletableByPjNums(pjNums: number[]): Observable<any> {
+    return this.httpClient.request("POST", this.localUrl + "/Project/deletable/", {
+      body: pjNums,
+    });
   }
 
   checkNonExistMemberByVisa(mems: string): Observable<any> {
@@ -57,9 +65,11 @@ export class PIMService {
       memString: memString,
     });
   }
-  deleteProject(ids: number[]) {
+
+  deleteProject(pjNums: number[]) {
+    console.log(pjNums)
     return this.httpClient.request("DELETE", this.localUrl + "/Project/", {
-      body: ids,
+      body: pjNums,
     });
   }
 }

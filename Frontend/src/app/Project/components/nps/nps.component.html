@@ -19,7 +19,7 @@
       </div>
 
       <div
-        class="col-8 border-bottom"
+        class="col-7 border-bottom"
         style="margin-top: 50px; margin-left: 50px"
       >
         <div>
@@ -52,6 +52,8 @@
                   npsForm.get('pjNum').invalid && isSubmitted ? 'red' : ''
               }"
               autofocus
+              minlength="1"
+              maxlength="4"
             />
 
             <div
@@ -157,7 +159,7 @@
             </select>
           </div>
 
-          <div class="new-project-row" style="margin-bottom: 50px">
+          <div class="new-project-row relative" style="margin-bottom: 50px">
             <span>
               <span class="label">{{ "start-date" | translate }} </span>
               <span class="red">*</span>
@@ -171,7 +173,7 @@
                 }"
               />
 
-              <span style="margin-left: 410px">
+              <span class="second-input" style="margin-left: 410px">
                 <span>{{ "end-date" | translate }} </span>
                 <input
                   class="short-nps-input"
@@ -201,7 +203,7 @@
       <button
         class="btn-grad bottom-next-button-right"
         type="button"
-        routerLink="/"
+        (click)="onCancel()"
       >
         {{ "cancel" | translate }}
       </button>
