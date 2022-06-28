@@ -13,9 +13,7 @@ namespace PIMBackend.Services
         Project Get(decimal id);
 
         //used to return Project
-        void Create(Project sample);
-
-        void CreateWithMem(Project project, string memString);
+        void Create(Project project, string memString);
 
         Project Update(Project project, string memString);
 

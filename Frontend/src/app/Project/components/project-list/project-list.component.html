@@ -74,13 +74,13 @@
                 </td>
                 <td>
                   <a
-                    href="/pim/edit/{{ pj.projectNumber }}"
+                    routerLink="/pim/edit/{{ pj.projectNumber }}"
                     style="color: #666666"
                     >{{ pj.projectNumber }}</a
                   >
                 </td>
                 <td>{{ pj.name }}</td>
-                <td>{{ pj.status }}</td>
+                <td>{{ pj.status | statusPipe | translate }}</td>
                 <td>{{ pj.customer }}</td>
                 <td>{{ pj.startDate | date: "dd.MM.yyyy" }}</td>
                 <td>

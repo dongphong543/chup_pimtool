@@ -37,7 +37,7 @@ namespace PIMBackend.Services.Imp
         {
             if (Get(employee.Id) != null)
             {
-                throw new IdAlreadyExistException();
+                throw new IdAlreadyExistException("Employee exists: ", employee.Id);
             }
 
             else
@@ -49,9 +49,9 @@ namespace PIMBackend.Services.Imp
                 {
                     _employeeRepository.SaveChange();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException e)
                 {
-                    throw new UpdateConflictException();
+                    throw new UpdateConflictException("Conflict in create.", e);
                 }
             }
         }
@@ -66,7 +66,7 @@ namespace PIMBackend.Services.Imp
 
             if (employee.Version != employeeDb.Version)
             {
-                throw new UpdateConflictException();
+                throw new UpdateConflictException("Conflict in update.", null);
             }
 
             else
@@ -82,9 +82,9 @@ namespace PIMBackend.Services.Imp
             {
                 _employeeRepository.SaveChange();
             }
-            catch (DbUpdateConcurrencyException) 
+            catch (DbUpdateConcurrencyException e) 
             {
-                throw new UpdateConflictException();
+                throw new UpdateConflictException("Conflict in update.", e);
             }
             
             return employeeDb;

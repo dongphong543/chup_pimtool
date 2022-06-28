@@ -1,23 +1,9 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
-import { Router } from "@angular/router";
-import { BehaviorSubject, Observable } from "rxjs";
+import { ActivatedRoute } from "@angular/router";
+import { Observable } from "rxjs";
 import { PIMService } from "../../services/pim.service";
 
-export class Project {
-  constructor(
-    public id: number,
-    public groupId: number,
-    public projectNumber: number,
-    public name: string,
-    public customer: string,
-    public status: string,
-    public startDate: string,
-    public endDate: string,
-    public version: number,
-    public checkbox: boolean
-  ) {}
-}
 
 @Component({
   selector: "pim-project-list",
@@ -26,9 +12,7 @@ export class Project {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectListComponent {
-  projectsArr: Project[];
   projects$: Observable<any>;
-  sortedColumn$ = new BehaviorSubject<string>("");
   searchForm: FormGroup;
   sortDirection$: Observable<any>;
 
@@ -37,9 +21,10 @@ export class ProjectListComponent {
 
   checkedPjNum: number[] = [];
 
-  constructor(private service: PIMService, private router: Router) {}
+  constructor(private service: PIMService, private activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
+
     this.searchForm = new FormGroup({
       searchText: new FormControl(""),
       searchStatus: new FormControl(""),
@@ -54,12 +39,6 @@ export class ProjectListComponent {
       this.searchForm.get("searchText").value,
       this.searchForm.get("searchStatus").value
     );
-
-    // this.projects$.subscribe((response) => (this.projectsArr = response));
-  }
-
-  sortOn(column: string) {
-    this.sortedColumn$.next(column);
   }
 
   changedCheckbox(pjNum: number, checked: boolean) {
@@ -73,15 +52,13 @@ export class ProjectListComponent {
         this.checkedPjNum.splice(idx, 1);
       }
     }
-    // console.log(this.checkedPjNum);
   }
 
   deleteProject(pjNum: string) {
 
     if (confirm("Are you sure you want to delete this project?")) {
-      this.service.checkProjectByPjNums([parseInt(pjNum)]).subscribe(
+      this.service.projectNumbersExist([parseInt(pjNum)]).subscribe(
             response => {
-              // console.log(parseInt(pjNum))
               if (response == false) {
                 alert("This project has been deleted already. Press OK to reload.");
                 window.location.reload();
@@ -96,13 +73,12 @@ export class ProjectListComponent {
           );
     }
     
-
   }
 
   deleteCheckedProject() {
 
     if (confirm("Are you sure you want to delete THESE projects?")) {
-      this.service.checkProjectByPjNums(this.checkedPjNum).subscribe(
+      this.service.projectNumbersExist(this.checkedPjNum).subscribe(
             response => {
               if (response == false) {
                 alert("One of these projects has been deleted already. Press OK to reload.");
@@ -131,28 +107,30 @@ export class ProjectListComponent {
   }
 
   searchProject() {
-    localStorage.setItem(
-      "searchTextCriteria",
-      this.searchForm.controls.searchText.value
-    );
-    localStorage.setItem(
-      "searchStatusCriteria",
-      this.searchForm.controls.searchStatus.value
-    );
+    let sText = this.searchForm.controls.searchText.value == null? "" : this.searchForm.controls.searchText.value,
+        sStatus = this.searchForm.controls.searchStatus.value == null? "" : this.searchForm.controls.searchStatus.value;
+        
+    localStorage.setItem("searchTextCriteria", sText);
+    localStorage.setItem("searchStatusCriteria", sStatus);
 
-    this.projects$ = this.service.getProjects(
-      this.searchForm.get("searchText").value,
-      this.searchForm.get("searchStatus").value
-    );
+    this.projects$ = this.service.getProjects(sText, sStatus);
+
     this.projects$.subscribe((response) => {
-      // this.projectsArr = response;
       this.checkedPjNum = [];
     });
+
+    
   }
 
   resetProject() {
-    localStorage.setItem("searchTextCriteria", "");
-    localStorage.setItem("searchStatusCriteria", "");
-    window.location.reload();
+    localStorage.removeItem("searchTextCriteria");
+    localStorage.removeItem("searchStatusCriteria");
+
+    this.searchForm.patchValue({
+      searchText: "",
+      searchStatus: "",
+    });
+
+    this.searchProject();
   }
 }

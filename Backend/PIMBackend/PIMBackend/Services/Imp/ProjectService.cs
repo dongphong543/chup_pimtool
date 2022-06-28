@@ -49,7 +49,7 @@ namespace PIMBackend.Services.Imp
             var ret = _projectRepository.Get().Include(p => p.Employees).SingleOrDefault(x => x.Id == id);
             if (ret == null)
             {
-                throw new IdNotExistException();
+                throw new IdNotExistException("Id not exist.", id);
             }
             return ret;
         }
@@ -59,16 +59,16 @@ namespace PIMBackend.Services.Imp
             var ret = _projectRepository.Get().Include(p => p.Employees).SingleOrDefault(x => x.ProjectNumber == pjNum);
             if (ret == null)
             {
-                throw new ProjectNumberNotExistsException();
+                throw new ProjectNumberNotExistsException("Project number not exist.", pjNum);
             }
             return ret;
         }
         
         private void ValidateForm(Project project)
         {
-            if (project.StartDate > project.EndDate)
+            if (project.EndDate != null && project.StartDate > project.EndDate)
             {
-                throw new DateInvalidException();
+                throw new DateInvalidException("Invalid date.", project.StartDate, (DateTime)project.EndDate);
             }
 
             if (project.ProjectNumber < 0 || project.ProjectNumber > 9999 ||
@@ -80,33 +80,26 @@ namespace PIMBackend.Services.Imp
             }
         }
 
-
-        public void Create(Project project)
-        {
-            CreateWithMem(project, "");
-        }
-
-        
-        public void CreateWithMem(Project project, string memString)
+        public void Create(Project project, string memString)
         {
             if (ProjectNumberExists(project.ProjectNumber) == true)
             {
-                throw new ProjectNumberAlreadyExistsException();
+                throw new ProjectNumberAlreadyExistsException("Project number(s) already exist(s).", project.ProjectNumber);
             }
 
             
             project.Version = 0;
             ValidateForm(project);
 
-            _projectRepository.AddWithMem(memString, project);
+            _projectRepository.Add(memString, project);
 
             try
             {
                 _projectRepository.SaveChange();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException e)
             {
-                throw new UpdateConflictException();
+                throw new UpdateConflictException("Conflict in create.", e);
             }
             
         }
@@ -118,12 +111,12 @@ namespace PIMBackend.Services.Imp
 
             if (projectDb == null)
             {
-                throw new IdNotExistException();
+                throw new UpdateConflictException("Conflict", null);
             }
 
             if (project.Version != projectDb.Version)
             {
-                throw new UpdateConflictException();
+                throw new UpdateConflictException("Conflict", null);
             }
 
             ValidateForm(project);
@@ -144,20 +137,17 @@ namespace PIMBackend.Services.Imp
 
                 projectDb.Version += 1;
 
-                if (string.IsNullOrEmpty(memString) == false)
-                {
-                    _projectRepository.UpdateWithMem(memString, projectDb);
-                }
-
+                _projectRepository.Update(memString, projectDb);
+                
             }
 
             try
             {
                 _projectRepository.SaveChange();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException e)
             {
-                throw new UpdateConflictException();
+                throw new UpdateConflictException("Conflict in update.", e);
             }
 
             return projectDb;
@@ -173,12 +163,11 @@ namespace PIMBackend.Services.Imp
                 var project = GetByPjNum(pjNums[i]);
                 if (project == null)
                 {
-                    throw new UpdateConflictException();
+                    throw new UpdateConflictException("Conflict  in delete.", null);
                 }
                 if (project.Status != "NEW")
                 {
-                    throw new StatusInvalidException();
-                    //return StatusCodes.Status412PreconditionFailed;
+                    throw new StatusInvalidException("Status invalid", project.Status);
                 }
                 ids.Add(project.Id);
             }

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using PIMBackend.Errors;
 
 namespace PIMBackend.ErrorHandler
 {
@@ -28,12 +29,15 @@ namespace PIMBackend.ErrorHandler
                         var logger = app.ApplicationServices.GetRequiredService<ILogger<Startup>>();
                         logger.LogError($"Some errors happened! {contextFeature.Error}");
 
-                        await context.Response.WriteAsync(new ErrorDetails()
+                        if (contextFeature.Error.GetType() == typeof(UpdateConflictException))
                         {
+                            context.Response.StatusCode = StatusCodes.Status409Conflict;
+                        }
+
+                        await context.Response.WriteAsync(new ErrorDetails()
+                        {   
                             StatusCode = context.Response.StatusCode,
-                            //Message = context.Messa.ToString()
-                            Message = context.Response.Body.ToString()
-                            //Message = contextFeature.GetType().ToString()
+                            Message = contextFeature.Error.GetType().ToString()
                         }.ToString());
                     }
                 });

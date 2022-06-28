@@ -11,7 +11,7 @@ export function existPjNumValidator(service): AsyncValidatorFn {
     const pjNum = control.value;
 
     return service
-      .checkProjectByPjNums([parseInt(pjNum)])
+      .projectNumbersExist([parseInt(pjNum)])
       .pipe(map((res) => (res == true ? { existPjNumError: true } : null)));
   };
 }

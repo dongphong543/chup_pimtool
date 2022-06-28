@@ -31,7 +31,7 @@ namespace PIMBackend.Services.Imp
             var ret = _groupRepository.Get().Include(g => g.GroupLeader).SingleOrDefault(x => x.Id == id);
             if (ret == null)
             {
-                throw new IdNotExistException();
+                throw new IdNotExistException("Id not exist.", id);
             }
 
             return ret;
@@ -42,7 +42,7 @@ namespace PIMBackend.Services.Imp
         {
             if (Get(group.Id) != null)
             {
-                throw new IdAlreadyExistException();
+                throw new IdAlreadyExistException("Id already exists: ", group.Id);
             }
 
             else
@@ -56,7 +56,7 @@ namespace PIMBackend.Services.Imp
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    throw new UpdateConflictException();
+                    throw new UpdateConflictException("Conflict in create.", null);
                 }
             }
 
@@ -73,7 +73,7 @@ namespace PIMBackend.Services.Imp
 
             if (groupDb.Version != group.Version)
             {
-                throw new UpdateConflictException();
+                throw new UpdateConflictException("Conflict in update.", null);
             }
 
             else
@@ -86,9 +86,9 @@ namespace PIMBackend.Services.Imp
             {
                 _groupRepository.SaveChange();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException e)
             {
-                throw new UpdateConflictException();
+                throw new UpdateConflictException("Conflict in update.", e);
             }
 
             return groupDb;

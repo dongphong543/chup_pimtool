@@ -28,7 +28,7 @@ export class PIMService {
     return this.httpClient.get<any>(this.localUrl + "/Group");
   }
 
-  checkProjectByPjNums(pjNums: number[]): Observable<any> {
+  projectNumbersExist(pjNums: number[]): Observable<any> {
     return this.httpClient.request("POST", this.localUrl + "/Project/exist/", {
       body: pjNums,
     });

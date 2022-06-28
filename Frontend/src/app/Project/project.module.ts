@@ -11,12 +11,15 @@ import { Ng2SearchPipeModule } from "ng2-search-filter";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
 import { UnexpectedErrorComponent } from "./components/unexpected-error/unexpected-error.component";
 
+import { StatusPipe } from "./pipes/project-status.pipe"
+
 @NgModule({
   declarations: [
     ProjectListComponent,
     NPSComponent,
     SidebarComponent,
     UnexpectedErrorComponent,
+    StatusPipe
   ],
   providers: [],
   imports: [

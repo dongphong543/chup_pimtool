@@ -106,17 +106,9 @@ namespace PIMBackend.Controllers
         [HttpPost]
         public void Post(ProjectAddDTO obj)
         {
-            if (string.IsNullOrEmpty(obj.memString))
-            {
-                _projectService.Create(_mapper.Map<ProjectDTO, Project>(obj.project));
-            }
-
-            else
-            {
-                _projectService.CreateWithMem(_mapper.Map<ProjectDTO, Project>(obj.project), obj.memString);
-            }
             
-            // if error throw exception
+            _projectService.Create(_mapper.Map<ProjectDTO, Project>(obj.project), obj.memString);
+            
         }
 
         // DELETE: api/Employee/5

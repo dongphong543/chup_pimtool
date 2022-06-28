@@ -1,15 +1,28 @@
 import { Location } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router, UrlSegment } from "@angular/router";
 import { combineLatest, Observable, of } from "rxjs";
-import { map } from "rxjs/operators";
-import { Project } from "../../../Base/components/grid/grid.component";
+import { catchError, map } from "rxjs/operators";
 import { BroadcastService } from "../../../Error/broadcast.service";
 import { dateValidator } from "../../validators/date-validator.directive";
 import { existPjNumValidator } from "../../validators/existed-pjNum-validator.directive";
 import { memberValidator } from "../../validators/member-validator.directive";
 import { PIMService } from "../../services/pim.service";
+
+class Project {
+  constructor(
+    public id: number,
+    public groupId: number,
+    public projectNumber: number,
+    public name: string,
+    public customer: string,
+    public status: string,
+    public startDate: Date,
+    public endDate: Date,
+    public version: number
+  ) {}
+}
 
 @Component({
   selector: "app-nps",
@@ -17,7 +30,7 @@ import { PIMService } from "../../services/pim.service";
   styleUrls: ["./nps.component.scss"],
 })
 export class NPSComponent implements OnInit {
-  nowInEPS: boolean;
+  nowInEditMode: boolean;
   isMemberNotFound: boolean;
   memberNotFound$: Observable<any>;
   isSubmitted: boolean = false;
@@ -25,7 +38,7 @@ export class NPSComponent implements OnInit {
   pjId: number = null;
   pjVersion: number = 0;
 
-  npsForm: FormGroup;
+  newProjectForm: FormGroup;
   groups$: Observable<any>;
   employees$: Observable<any>;
   nonExistEmployees$: Observable<any>;
@@ -46,21 +59,22 @@ export class NPSComponent implements OnInit {
     private service: PIMService,
     private location: Location,
     public broadcastService: BroadcastService,
-    private router: Router
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    let path: string = this.location.path();
-    this.nowInEPS = path.slice(5, 9) == "edit";
+    let urlSegment: UrlSegment[] = this.activatedRoute.snapshot.url;
+    this.nowInEditMode = urlSegment[0].path == "edit";
     this.isMemberNotFound = false;
 
     this.groups$ = this.service.getGroups();
     this.employees$ = this.service.getEmployees();
 
-    this.npsForm = new FormGroup(
+    this.newProjectForm = new FormGroup(
       {
         pjNum: new FormControl(
-          { value: "", disabled: this.nowInEPS },
+          { value: "", disabled: this.nowInEditMode },
           [
             Validators.required,
             Validators.min(1),
@@ -90,11 +104,11 @@ export class NPSComponent implements OnInit {
       }
     );
 
-    if (this.nowInEPS) {
+    if (this.nowInEditMode) {
       this.service
-        .getProjectByPjNum(parseInt(path.slice(10, path.length + 1)))
+        .getProjectByPjNum(parseInt(urlSegment[1].path))
         .subscribe((response) => {
-          this.npsForm.patchValue({
+          this.newProjectForm.patchValue({
             pjNum: response.projectNumber,
             name: response.name,
             customer: response.customer,
@@ -112,7 +126,7 @@ export class NPSComponent implements OnInit {
     else {
       if (localStorage.getItem("projectForm") != null) {
         of(localStorage.getItem("projectForm")).subscribe(
-          response => this.npsForm.patchValue(JSON.parse(response))
+          response => this.newProjectForm.patchValue(JSON.parse(response))
         );
       }  
     }
@@ -137,54 +151,69 @@ export class NPSComponent implements OnInit {
   onSubmit() {
     this.isSubmitted = true;
     this.nonExistEmployees$ = this.service.checkNonExistMemberByVisa(
-      this.npsForm.controls.member.value
+      this.newProjectForm.controls.member.value
     );
 
-    if (this.npsForm.invalid) return;
+    if (this.newProjectForm.invalid) return;
 
     this.pj = new Project(
       this.pjId,
-      this.npsForm.controls.group.value,
-      this.npsForm.controls.pjNum.value,
-      this.npsForm.controls.name.value,
-      this.npsForm.controls.customer.value,
-      this.npsForm.controls.status.value,
-      this.npsForm.controls.startDate.value,
-      this.npsForm.controls.endDate.value?.length == 0
+      this.newProjectForm.controls.group.value,
+      this.newProjectForm.controls.pjNum.value,
+      this.newProjectForm.controls.name.value,
+      this.newProjectForm.controls.customer.value,
+      this.newProjectForm.controls.status.value,
+      this.newProjectForm.controls.startDate.value,
+      this.newProjectForm.controls.endDate.value?.length == 0
         ? null
-        : this.npsForm.controls.endDate.value,
+        : this.newProjectForm.controls.endDate.value,
       this.pjVersion
     );
-
-    if (this.nowInEPS == false) delete this.pj.id;
-
-    // console.log(this.pj);
+    
     localStorage.removeItem("projectForm");
+    
+    if (this.nowInEditMode == false) {    // New project mode
+      delete this.pj.id;
+      this.service.projectNumbersExist([this.pj.projectNumber]).subscribe(
+        response => {
+          if (response == false) {
+            this.addProject();
+          }
+          else {
+            this.newProjectForm.get('pjNum').setErrors({existPjNumError: true});
+            console.log(this.newProjectForm.get('pjNum').errors)
+          }
+        }
+      );
+    }
 
-    if (this.nowInEPS == false) this.addProject();
-    else this.editProject();
+    else this.editProject();              // Edit project mode
   }
 
   onCancel() {
-    if (this.nowInEPS == false) {
-      localStorage.setItem("projectForm", JSON.stringify(this.npsForm.value));
+    if (this.nowInEditMode == false) {
+      localStorage.setItem("projectForm", JSON.stringify(this.newProjectForm.value));
     }
 
     this.router.navigate(["/"]);
   }
 
   addProject() {
-    if (this.npsForm.invalid) return;
-    this.service
-      .postProject(this.pj, this.npsForm.get("member").value)
+    if (this.newProjectForm.invalid) return;
+    else {
+      this.service
+      .postProject(this.pj, this.newProjectForm.get("member").value)
       .subscribe((response) => this.router.navigate(["/"]));
+    }
   }
 
   editProject() {
-    if (this.npsForm.invalid) return;
-    this.service
-      .putProject(this.pj, this.npsForm.get("member").value)
+    if (this.newProjectForm.invalid) return;
+    else {
+      this.service
+      .putProject(this.pj, this.newProjectForm.get("member").value)
       .subscribe((response) => this.router.navigate(["/"]));
+    } 
   }
 
   setSubmittedFalse() {

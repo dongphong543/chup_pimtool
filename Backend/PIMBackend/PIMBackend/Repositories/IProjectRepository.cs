@@ -8,7 +8,7 @@ namespace PIMBackend.Repositories
     public interface IProjectRepository : IRepository<Project>
     {
         bool ProjectNumberExists(decimal pjNum);
-        void AddWithMem(string memString, Project project);
-        void UpdateWithMem(string memString, Project projectDb);
+        void Add(string memString, Project project);
+        void Update(string memString, Project projectDb);
     }
 }

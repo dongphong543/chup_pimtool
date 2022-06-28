@@ -3,10 +3,9 @@ import { NgModule, ModuleWithProviders } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
 
-import { GridComponent } from "./components";
 
 // All exported items hear need to declare in public_api.ts
-const DECLARED_EXPORTS = [GridComponent];
+const DECLARED_EXPORTS = [];
 
 const ENTRY_COMPONENTS = [];
 
