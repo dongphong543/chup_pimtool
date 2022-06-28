@@ -7,6 +7,10 @@
   margin-bottom: 15px;
 }
 
+.first-row {
+  margin-top: 85px !important;
+}
+
 .new-project-row {
   position: relative;
   margin-top: 38px;
@@ -64,12 +68,22 @@
   border-color: $pim-graya;
 }
 
+.margin-bottom {
+  margin-bottom: 10px;
+}
+
+.last-row-margin-bottom {
+  margin-bottom: 75px;
+}
+
 .alert {
-  margin-top: 10px;
+  margin-top: 0px;
+  margin-bottom: -60px;
 }
 
 .bottom-button-right {
   position: relative;
+  margin-bottom: 100px;
   left: 50%;
 }
 
@@ -84,9 +98,11 @@
 .custom-alert-after-input {
   position: relative;
   margin-left: 200px;
-  margin-top: 5px;
+  margin-top: 2.5px;
+  margin-bottom: -26px;
   color: red;
   font-size: 12pt;
+  
 }
 
 .button-row {

@@ -16,13 +16,13 @@
         style="margin-top: 50px; margin-left: 50px"
       >
         <div>
-          <div class="row border-bottom">
-            <span *ngIf="!nowInEditMode" class="gray-title">{{
-              "new-project" | translate
-            }}</span>
-            <span *ngIf="nowInEditMode" class="gray-title">{{
-              "edit-project-information" | translate
-            }}</span>
+          <div class="row border-bottom margin-bottom">
+            <span *ngIf="!nowInEditMode" class="gray-title">
+              {{ "new-project" | translate }}
+            </span>
+            <span *ngIf="nowInEditMode" class="gray-title">
+              {{ "edit-project-information" | translate }}
+            </span>
           </div>
 
           <div
@@ -33,7 +33,7 @@
             <strong>{{ "missing-field" | translate }}</strong>
           </div>
 
-          <div class="new-project-row">
+          <div class="first-row new-project-row">
             <span class="label">{{ "project-number" | translate }} </span>
             <span class="red">*</span>
             <input
@@ -52,7 +52,7 @@
             <div
               class="custom-alert-after-input"
               *ngIf="
-                newProjectForm.get('pjNum').errors?.existPjNumError
+                newProjectForm.get('pjNum').errors?.existPjNumError && isSubmitted
               "
             >
               {{ "pj-num-error" | translate }}
@@ -117,16 +117,6 @@
               list="members"
             />
 
-            <!-- <datalist id="members">
-              <option 
-                *ngFor="let mem of employees$ | async"
-                [value]="mem.visa"
-                multiple 
-              >
-                {{ mem.firstName }} {{ mem.lastName }}
-              </option>
-            </datalist> -->
-
             <div
               class="custom-alert-after-input"
               *ngIf="newProjectForm.get('member').invalid && isSubmitted"
@@ -152,7 +142,7 @@
             </select>
           </div>
 
-          <div class="new-project-row relative" style="margin-bottom: 50px">
+          <div class="new-project-row relative last-row-margin-bottom">
             <span>
               <span class="label">{{ "start-date" | translate }} </span>
               <span class="red">*</span>

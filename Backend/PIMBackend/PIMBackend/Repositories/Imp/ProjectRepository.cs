@@ -12,10 +12,10 @@ namespace PIMBackend.Repositories.Imp
     /// </summary>
     public class ProjectRepository : BaseRepository<Project>, IProjectRepository
     {
-        private readonly EmployeeRepository _emRepo;
+        private readonly EmployeeRepository _employeeRepository;
         public ProjectRepository(PIMContext context) : base(context)
         {
-            _emRepo = new EmployeeRepository(context);
+            _employeeRepository = new EmployeeRepository(context);
 
         }
 
@@ -28,13 +28,13 @@ namespace PIMBackend.Repositories.Imp
         {
             if (string.IsNullOrEmpty(memString) == false)
             {
-                string[] notFoundVisa = _emRepo.GetExistOrNotExistEmployeeArray(memString, false);
+                string[] notFoundVisa = _employeeRepository.GetExistOrNotExistEmployeeArray(memString, false);
                 if (notFoundVisa.Length == 0)
                 {
-                    string[] foundVisa = _emRepo.GetExistOrNotExistEmployeeArray(memString, true);
+                    string[] foundVisa = _employeeRepository.GetExistOrNotExistEmployeeArray(memString, true);
                     for (int i = 0; i < foundVisa.Length; ++i)
                     {
-                        project.Employees.Add(_emRepo.GetByVisa(foundVisa[i]));
+                        project.Employees.Add(_employeeRepository.GetByVisa(foundVisa[i]));
                     }
                 }
 
@@ -51,15 +51,15 @@ namespace PIMBackend.Repositories.Imp
         {
             if (string.IsNullOrEmpty(memString) == false)
             {
-                string[] notFoundVisa = _emRepo.GetExistOrNotExistEmployeeArray(memString, false);
+                string[] notFoundVisa = _employeeRepository.GetExistOrNotExistEmployeeArray(memString, false);
 
                 if (notFoundVisa.Length == 0)
                 {
                     projectDb.Employees.Clear();
-                    string[] foundVisa = _emRepo.GetExistOrNotExistEmployeeArray(memString, true);
+                    string[] foundVisa = _employeeRepository.GetExistOrNotExistEmployeeArray(memString, true);
                     for (int i = 0; i < foundVisa.Length; ++i)
                     {
-                        projectDb.Employees.Add(_emRepo.GetByVisa(foundVisa[i]));
+                        projectDb.Employees.Add(_employeeRepository.GetByVisa(foundVisa[i]));
                     }
                 }
 
