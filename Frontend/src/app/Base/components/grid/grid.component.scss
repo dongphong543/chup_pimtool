@@ -1,15 +1,17 @@
+@import "src/styles/variables";
+
 th {
     font-size: 14pt;
     font-family: "Segoe UI";
     font-weight: 400;
-    color: #666666;
+    color: $pim-gray6;
   }
 
   td {
     font-size: 14pt;
     font-family: "Segoe UI";
     font-weight: 600;
-    color: #666666;
+    color: $pim-gray6;
   }
 
   table td:nth-child(1) {

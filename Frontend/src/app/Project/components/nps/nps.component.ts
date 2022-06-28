@@ -49,7 +49,7 @@ export class NPSComponent implements OnInit {
   statuses = [
     { name: "New", code: "NEW" },
     { name: "Planned", code: "PLA" },
-    { name: "In Progress", code: "INP" },
+    { name: "In progress", code: "INP" },
     { name: "Finished", code: "FIN" },
   ];
 
@@ -57,7 +57,6 @@ export class NPSComponent implements OnInit {
 
   constructor(
     private service: PIMService,
-    private location: Location,
     public broadcastService: BroadcastService,
     private router: Router,
     private activatedRoute: ActivatedRoute

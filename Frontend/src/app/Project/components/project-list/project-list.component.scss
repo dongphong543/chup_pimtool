@@ -1,7 +1,9 @@
+@import "src/styles/variables";
+
 .gray-title {
   font-size: 16pt;
   font-weight: 600;
-  color: #666666;
+  color: $pim-gray6;
   margin-bottom: 15px;
 }
 
@@ -36,7 +38,7 @@
   height: 40px;
   font-size: 14pt;
   font-weight: 600;
-  color: #2f85fa;
+  color: $pim-blue;
 }
 
 .delete-select-item {
@@ -94,14 +96,14 @@ th {
   font-size: 14pt;
   font-family: "Segoe UI";
   font-weight: 400;
-  color: #666666;
+  color: $pim-gray6;
 }
 
 td {
   font-size: 14pt;
   font-family: "Segoe UI";
   font-weight: 600;
-  color: #666666;
+  color: $pim-gray6;
 }
 
 .table th {

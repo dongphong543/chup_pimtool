@@ -1,3 +1,5 @@
+@import "src/styles/variables";
+
 .red-cross {
   width: 80%;
 }
@@ -11,7 +13,7 @@
 .error-text {
   font-size: 22pt;
   font-weight: 600;
-  color: #666666;
+  color: $pim-gray6;
 }
 
 .error-message {
@@ -23,7 +25,7 @@
 }
 
 .error-text-blue {
-  color: #2371bf;
+  color: $pim-blue;
 }
 
 .transparent {

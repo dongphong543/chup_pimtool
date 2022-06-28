@@ -1,21 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
+@import "./bootstrap";
 
 html,
 body {
-  background-color: #fafafa !important;
+  background-color: $pim-background-color;
   width: 100%;
   height: 100%;
   overflow: auto;
 }
-
-@import "./bootstrap";
 
 button.link-small-gray {
   background: none;
   border: none;
   outline: none;
   margin-top: 0px;
-  color: #666666;
+  color: $pim-gray6;
   font-weight: 400;
   font-size: 14pt;
   font-family: "Segoe UI";
