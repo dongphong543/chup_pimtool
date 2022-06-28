@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using PIMBackend.DTOs;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,9 +25,6 @@ namespace PIMBackend.ErrorHandler
                     var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
                     if (contextFeature != null)
                     {
-                        var logger = app.ApplicationServices.GetRequiredService<ILogger<Startup>>();
-                        logger.LogError($"Some errors happened! {contextFeature.Error}");
-
                         if (contextFeature.Error.GetType() == typeof(UpdateConflictException))
                         {
                             context.Response.StatusCode = StatusCodes.Status409Conflict;
