@@ -54,42 +54,61 @@
 }
 
 .pagination {
+  
   display: inline-block;
-  position: absolute;
-  right: 15px;
-  margin-top: 15px;
+    position: absolute;
+    right: 15px;
+    margin-top: 15px;
+    margin-bottom: 100px; 
+  
+  ::ng-deep {
+    .ngx-pagination {
+
+      .disabled {
+        color: $pim-graya;
+      }
+      .pagination-previous{
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+      } 
+      .pagination-next{
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+
+        a {
+          padding-left: 2px;
+        }
+        .disabled::after {
+          margin-left: 0px !important;
+        }
+      }
+    }
+    
+    li {
+      border: 0.25px solid $pim-grayd;
+      height: 32px;
+      width: 32px;
+      background-color: white; 
+      color: $pim-blue;
+      margin: 0;
+    }
+    li.current {
+      background-color: $pim-grayd;  
+      color: $pim-gray6;
+    }
+    
+  }
 }
 
-.pagination a {
-  color: black;
-  float: left;
-  padding: 3px 10px;
-  text-decoration: none;
-  border: 1px solid #ddd;
-  height: 32px;
-  width: 32px;
-  justify-content: center;
-}
+.table-sort-button {
+  padding: 0px;
+  width: 100%;
+  text-align: left;
+  color: $pim-gray6;
+  background-color: white;
+  outline: transparent;
+  border: transparent;
 
-.pagination a.active {
-  background-color: #ddd;
-  color: #888;
-  border: 1px solid #ddd;
-}
-
-.pagination a:not(.active) {
-  background-color: #fff;
-  color: #999999;
-}
-
-.pagination a:first-child {
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-}
-
-.pagination a:last-child {
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
 }
 
 th {
@@ -119,6 +138,10 @@ table td {
 
   &:nth-child(2) {
     text-align: end;
+  }
+
+  &:nth-child(6) {
+    text-align: center;
   }
 
   &:nth-child(7) {

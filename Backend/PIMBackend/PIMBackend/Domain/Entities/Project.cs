@@ -21,7 +21,7 @@ namespace PIMBackend.Domain.Entities
         public string Status { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public decimal Version { get; set; }
+        public byte[] Version { get; set; }
 
         public virtual Group Group { get; set; }
         public virtual ICollection<Employee> Employees { get; set; }

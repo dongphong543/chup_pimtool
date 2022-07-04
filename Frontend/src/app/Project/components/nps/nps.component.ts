@@ -5,9 +5,10 @@ import { ActivatedRoute, Router, UrlSegment } from "@angular/router";
 import { combineLatest, Observable, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { BroadcastService } from "../../../Error/broadcast.service";
-import { dateValidator } from "../../validators/date-validator.directive";
-import { existPjNumValidator } from "../../validators/existed-pjNum-validator.directive";
-import { memberValidator } from "../../validators/member-validator.directive";
+import { dateValidator } from "../../validators/date-validator";
+import { existPjNumValidator } from "../../validators/existed-pjNum-validator";
+import { memberValidator } from "../../validators/member-validator";
+import { emptyOrSpacesValidator } from "../../validators/empty-or-spaces-validator";
 import { PIMService } from "../../services/pim.service";
 
 class Project {
@@ -33,7 +34,7 @@ export class NPSComponent implements OnInit {
   nowInEditMode: boolean;
   isMemberNotFound: boolean;
   memberNotFound$: Observable<any>;
-  isSubmitted: boolean = false;
+  isSubmitButtonPressed: boolean = false;
 
   pjId: number = null;
   pjVersion: number = 0;
@@ -85,10 +86,12 @@ export class NPSComponent implements OnInit {
         name: new FormControl("", [
           Validators.required,
           Validators.maxLength(50),
+          emptyOrSpacesValidator
         ]),
         customer: new FormControl(null, [
           Validators.required,
           Validators.maxLength(50),
+          emptyOrSpacesValidator
         ]),
         group: new FormControl("", Validators.required),
         member: new FormControl("", [], [memberValidator(this.service)]),
@@ -148,7 +151,7 @@ export class NPSComponent implements OnInit {
   }
 
   onSubmit() {
-    this.isSubmitted = true;
+    this.isSubmitButtonPressed = true;
     this.nonExistEmployees$ = this.service.checkNonExistMemberByVisa(
       this.newProjectForm.controls.member.value
     );
@@ -173,6 +176,7 @@ export class NPSComponent implements OnInit {
     
     if (this.nowInEditMode == false) {    // New project mode
       delete this.pj.id;
+      delete this.pj.version;
       this.service.projectNumbersExist([this.pj.projectNumber]).subscribe(
         response => {
           if (response == false) {
@@ -216,6 +220,6 @@ export class NPSComponent implements OnInit {
   }
 
   setSubmittedFalse() {
-    this.isSubmitted = false;
+    this.isSubmitButtonPressed = false;
   }
 }

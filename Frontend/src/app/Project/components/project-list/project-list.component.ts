@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
+import { PageEvent } from "@angular/material/paginator";
 import { ActivatedRoute } from "@angular/router";
+import { PaginationInstance } from "ngx-pagination";
 import { Observable } from "rxjs";
+import { tap } from "rxjs/operators"
 import { PIMService } from "../../services/pim.service";
 
 
@@ -12,19 +15,45 @@ import { PIMService } from "../../services/pim.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectListComponent {
+  maxPageNumber: number;
+
+  public paginationConfig: PaginationInstance = {
+    id: 'project-list-pagination',
+    itemsPerPage: 5,
+    currentPage: 1,
+    totalItems: 16
+  };
+
+  sortingCol: string;
+  sortingDirection: number;
+
   projects$: Observable<any>;
   searchForm: FormGroup;
-  sortDirection$: Observable<any>;
 
   searchText: string = "";
   searchStatus: string = "";
 
   checkedPjNum: number[] = [];
+  
 
-  constructor(private service: PIMService, private activatedRoute: ActivatedRoute) {}
+  constructor(private service: PIMService) {}
+  
+  getProjectsList() {
+    return  this.service.getProjects(
+            this.searchForm.get("searchText").value,
+            this.searchForm.get("searchStatus").value,
+            this.sortingCol,
+            this.sortingDirection,
+            this.paginationConfig.currentPage - 1,
+            this.paginationConfig.itemsPerPage
+    )
+  }
 
   ngOnInit(): void {
+    this.sortingCol = 'P';
+    this.sortingDirection = 1;
 
+    // Get ready for Search Form
     this.searchForm = new FormGroup({
       searchText: new FormControl(""),
       searchStatus: new FormControl(""),
@@ -35,10 +64,50 @@ export class ProjectListComponent {
       searchStatus: localStorage.getItem("searchStatusCriteria"),
     });
 
-    this.projects$ = this.service.getProjects(
+    // Get ready for Pagination
+    this.maxPageNumber = 5;
+    this.paginationConfig.itemsPerPage = 8;
+    this.paginationConfig.currentPage = 1;
+    this.service.getProjectCount(
       this.searchForm.get("searchText").value,
       this.searchForm.get("searchStatus").value
+    ).subscribe(
+      response => this.paginationConfig.totalItems = response
+    )
+
+    // Get projects list
+    this.projects$ = this.getProjectsList();
+  }
+
+  onPageChange(number: number) {
+    this.paginationConfig.currentPage = number;
+    this.projects$ = this.getProjectsList();
+
+    this.service.getProjectCount(
+      this.searchForm.get("searchText").value,
+      this.searchForm.get("searchStatus").value
+    ).subscribe(
+      response => {this.paginationConfig.totalItems = response;}
     );
+    
+  }
+
+  onPressSortingHeader(s: string) {                        // 1 is ASC, 2 is DESC
+    if (['P', 'N', 'S', 'C', 'D'].includes(s)) {
+      if (this.sortingCol === s) {
+        this.sortingDirection = (this.sortingDirection == 1 ? 2 : 1);
+      }
+      else {
+        this.sortingCol = s;
+        this.sortingDirection = 1;
+      }
+    }
+
+    this.projects$ = this.getProjectsList();
+  }
+
+  getToPage1() {
+    this.paginationConfig.currentPage = 1;
   }
 
   changedCheckbox(pjNum: number, checked: boolean) {
@@ -109,22 +178,31 @@ export class ProjectListComponent {
   searchProject() {
     let sText = this.searchForm.controls.searchText.value == null? "" : this.searchForm.controls.searchText.value,
         sStatus = this.searchForm.controls.searchStatus.value == null? "" : this.searchForm.controls.searchStatus.value;
-        
+    
     localStorage.setItem("searchTextCriteria", sText);
     localStorage.setItem("searchStatusCriteria", sStatus);
 
-    this.projects$ = this.service.getProjects(sText, sStatus);
+    this.getToPage1();
+
+    this.projects$ = this.service.getProjects(
+      sText,
+      sStatus,
+      this.sortingCol,
+      this.sortingDirection,
+      this.paginationConfig.currentPage - 1,
+      this.paginationConfig.itemsPerPage);
+    this.service.getProjectCount(sText, sStatus).subscribe(
+      response => {this.paginationConfig.totalItems = response;}
+    );
 
     this.projects$.subscribe((response) => {
       this.checkedPjNum = [];
     });
-
-    
   }
 
   resetProject() {
-    localStorage.removeItem("searchTextCriteria");
-    localStorage.removeItem("searchStatusCriteria");
+    localStorage.setItem("searchTextCriteria", "");
+    localStorage.setItem("searchStatusCriteria", "");
 
     this.searchForm.patchValue({
       searchText: "",

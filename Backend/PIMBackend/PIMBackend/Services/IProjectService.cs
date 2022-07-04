@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using PIMBackend.Domain.Entities;
 
 namespace PIMBackend.Services
@@ -8,7 +9,7 @@ namespace PIMBackend.Services
     /// </summary>
     public interface IProjectService
     {
-        IEnumerable<Project> Get(string searchText, string searchCriteria);
+        IEnumerable<Project> Get(string searchText, string searchStatus);
 
         Project Get(decimal id);
 

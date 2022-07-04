@@ -32,11 +32,57 @@ namespace PIMBackend.Controllers
 
         // GET: api/Project
         [HttpGet]
-        public IEnumerable<ProjectDTO> Get(string searchText, string searchCriteria)
+        public IEnumerable<ProjectDTO> Get(string searchText, string searchStatus, char sortingCol = 'P', int sortingDirection = 1, int pageIndex = 0, int pageSize = 5)
         {
-            return _mapper  .Map<IEnumerable<Project>, IEnumerable<ProjectDTO>>(_projectService
-                            .Get(searchText, searchCriteria))
-                            .OrderBy(p => p.ProjectNumber);
+            // Check table sorting criteria
+            char[] cols = { 'P', 'N', 'S', 'C', 'D' };
+
+            if (Array.IndexOf(cols, sortingCol) == -1 || (sortingDirection != 1 && sortingDirection != 2))
+            {
+                throw new SortCriteriaInvalidException("Invalid sorting criteria.", sortingCol, sortingDirection);
+            }
+
+            IEnumerable<ProjectDTO> ret = _mapper   .Map<IEnumerable<Project>, IEnumerable<ProjectDTO>>(_projectService
+                                                   .Get(searchText, searchStatus));
+
+            // Check pagination
+            if (pageIndex + 1 > Math.Ceiling(ret.Count() / (decimal)pageSize))
+            {
+                throw new PageInvalidException("Page number invalid.", pageIndex + 1);
+            }
+
+            switch (sortingCol)
+            {
+                case 'P':
+                    ret = sortingDirection == 1 ? ret.OrderBy(p => p.ProjectNumber) : ret.OrderByDescending(p => p.ProjectNumber);
+                    break;
+                case 'N':
+                    ret = sortingDirection == 1 ? ret.OrderBy(p => p.Name) : ret.OrderByDescending(p => p.Name);
+                    break;
+                case 'S':
+                    ret = sortingDirection == 1 ? ret.OrderBy(p => p.Status) : ret.OrderByDescending(p => p.Status);
+                    break;
+                case 'C':
+                    ret = sortingDirection == 1 ? ret.OrderBy(p => p.Customer) : ret.OrderByDescending(p => p.Customer);
+                    break;
+                case 'D':
+                    ret = sortingDirection == 1 ? ret.OrderBy(p => p.StartDate) : ret.OrderByDescending(p => p.StartDate);
+                    break;
+                default:
+                    throw new SortCriteriaInvalidException("Invalid sorting criteria.", sortingCol, sortingDirection);
+            }
+
+            return ret.Skip(pageIndex * pageSize)
+                      .Take(pageSize);
+        }
+
+        [HttpGet("count")]
+        public int GetCount(string searchText, string searchStatus)
+        {
+            return _mapper.Map<IEnumerable<Project>, IEnumerable<ProjectDTO>>(_projectService
+                            .Get(searchText, searchStatus))
+                            .Count()
+                            ;
         }
 
         // GET: api/Project/5

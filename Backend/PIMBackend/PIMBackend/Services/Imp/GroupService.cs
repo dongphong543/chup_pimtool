@@ -40,25 +40,24 @@ namespace PIMBackend.Services.Imp
         //return type
         public void Create(Group group)
         {
-            if (Get(group.Id) != null)
-            {
-                throw new IdAlreadyExistException("Id already exists: ", group.Id);
-            }
+            //if (Get(group.Id) != null)
+            //{
+            //    throw new IdAlreadyExistException("Id already exists: ", group.Id);
+            //}
 
-            else
-            {
-                group.Version = 0;
-                _groupRepository.Add(group);
+            //else
+            //{
+            _groupRepository.Add(group);
 
-                try
-                {
-                    _groupRepository.SaveChange();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    throw new UpdateConflictException("Conflict in create.", null);
-                }
+            try
+            {
+                _groupRepository.SaveChange();
             }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw new UpdateConflictException("Conflict in create.", null);
+            }
+            //}
 
         }
 
@@ -67,19 +66,17 @@ namespace PIMBackend.Services.Imp
             var groupDb = _groupRepository.Get(group.Id);
             if (groupDb == null)
             {
-                throw new ArgumentException();
+                throw new UpdateConflictException("Conflict", null);
             }
 
 
-            if (groupDb.Version != group.Version)
+            if (group.Version.SequenceEqual(groupDb.Version) == false)
             {
-                throw new UpdateConflictException("Conflict in update.", null);
+                throw new UpdateConflictException("Conflict", null);
             }
-
             else
             {
                 groupDb.GroupLeaderId = group.GroupLeaderId;
-                groupDb.Version += 1;
             }
 
             try

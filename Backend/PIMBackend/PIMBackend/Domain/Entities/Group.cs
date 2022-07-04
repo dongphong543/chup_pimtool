@@ -16,7 +16,7 @@ namespace PIMBackend.Domain.Entities
 
         public override decimal Id { get; set; }
         public decimal GroupLeaderId { get; set; }
-        public decimal Version { get; set; }
+        public byte[] Version { get; set; }
 
         public virtual Employee GroupLeader { get; set; }
         public virtual ICollection<Project> Projects { get; set; }

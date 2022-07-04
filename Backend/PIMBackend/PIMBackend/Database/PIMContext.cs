@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using PIMBackend.Domain.Entities;
 
+using System.Data.Common;
+
 #nullable disable
 
 namespace PIMBackend.Database
@@ -20,6 +22,11 @@ namespace PIMBackend.Database
             : base(options)
         {
         }
+
+        //public PIMContext(DbConnection dbConnection)
+        //    : base(dbConnection)
+        //{
+        //}
 
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<Group> Groups { get; set; }
@@ -61,8 +68,8 @@ namespace PIMBackend.Database
                     .HasColumnName("LAST_NAME");
 
                 entity.Property(e => e.Version)
-                    .HasColumnType("numeric(10, 0)")
-                    .HasColumnName("VERSION");
+                    .HasColumnName("VERSION")
+                    .IsRowVersion();
 
                 entity.Property(e => e.Visa)
                     .IsRequired()
@@ -92,8 +99,8 @@ namespace PIMBackend.Database
                     .HasColumnName("GROUP_LEADER_ID");
 
                 entity.Property(e => e.Version)
-                    .HasColumnType("numeric(10, 0)")
-                    .HasColumnName("VERSION");
+                    .HasColumnName("VERSION")
+                    .IsRowVersion();
 
             });
 
@@ -145,8 +152,8 @@ namespace PIMBackend.Database
                     .IsFixedLength(true);
 
                 entity.Property(e => e.Version)
-                    .HasColumnType("numeric(10, 0)")
-                    .HasColumnName("VERSION");
+                    .HasColumnName("VERSION")
+                    .IsRowVersion();
 
                 entity.HasOne(d => d.Group)
                     .WithMany(p => p.Projects)

@@ -70,7 +70,7 @@ namespace PIMBackend
             builder.RegisterType<EmployeeRepository>().As<IEmployeeRepository>().InstancePerLifetimeScope();
             builder.RegisterType<GroupRepository>().As<IGroupRepository>().InstancePerLifetimeScope();
 
-            // Context
+            // Context - bug here
             //builder.RegisterType<PIMContext>().AsSelf().InstancePerLifetimeScope();
 
             // mapper

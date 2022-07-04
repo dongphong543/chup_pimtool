@@ -9,11 +9,22 @@ export class PIMService {
   constructor(public httpClient: HttpClient) {}
   localUrl: string = "https://localhost:44334/api";
 
-  getProjects(searchText: string, searchCriteria: string): Observable<any> {
+  getProjects(searchText: string, searchStatus: string, sortingCol: string, sortingDirection: number, pageIndex: number, pageSize: number): Observable<any> {
     var query = new URLSearchParams();
     query.append("searchText", searchText);
-    query.append("searchCriteria", searchCriteria);
+    query.append("searchStatus", searchStatus);
+    query.append("sortingCol", sortingCol);
+    query.append("sortingDirection", sortingDirection.toString());
+    query.append("pageIndex", pageIndex.toString());
+    query.append("pageSize", pageSize.toString());
     return this.httpClient.get(this.localUrl + "/Project?" + query.toString());
+  }
+
+  getProjectCount(searchText: string, searchStatus: string): Observable<any> {
+    var query = new URLSearchParams();
+    query.append("searchText", searchText);
+    query.append("searchStatus", searchStatus);
+    return this.httpClient.get(this.localUrl + "/Project/count?" + query.toString());
   }
 
   getProjectByPjNum(pjNum: number): Observable<any> {

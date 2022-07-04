@@ -14,7 +14,7 @@ namespace PIMBackend.DTOs
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime BirthDate { get; set; }
-        public decimal Version { get; set; }
+        public byte[] Version { get; set; }
 
     }
 }

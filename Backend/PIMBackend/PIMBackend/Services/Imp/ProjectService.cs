@@ -15,15 +15,22 @@ namespace PIMBackend.Services.Imp
     public class ProjectService : BaseService, IProjectService
     {
         private readonly IProjectRepository _projectRepository;
+        protected readonly IEmployeeRepository _employeeRepository;
 
-        public ProjectService(IProjectRepository projectRepository)
+        public ProjectService(IProjectRepository projectRepository, IEmployeeRepository employeeRepository)
         {
             _projectRepository = projectRepository;
+            _employeeRepository = employeeRepository;
         }
 
         public IEnumerable<Project> Get(string searchText, string searchStatus)
         {
+
+            // Get the query
             IQueryable<Project> query = _projectRepository.Get().Include(p => p.Employees);
+            
+
+            // Search by searching criteria
             if (string.IsNullOrEmpty(searchText) == false)
             {
                 query = query.Where(p =>
@@ -72,9 +79,9 @@ namespace PIMBackend.Services.Imp
             }
 
             if (project.ProjectNumber < 0 || project.ProjectNumber > 9999 ||
-                project.Name == null || project.Name.Length > 50 ||
-                project.Customer == null || project.Customer.Length > 50 ||
-                project.Status == null)
+                string.IsNullOrWhiteSpace(project.Name) || project.Name.Length > 50 ||
+                string.IsNullOrWhiteSpace(project.Customer) || project.Customer.Length > 50 ||
+                string.IsNullOrWhiteSpace(project.Status))
             {
                 throw new FormInvalidException();
             }
@@ -87,11 +94,9 @@ namespace PIMBackend.Services.Imp
                 throw new ProjectNumberAlreadyExistsException("Project number(s) already exist(s).", project.ProjectNumber);
             }
 
-            
-            project.Version = 0;
             ValidateForm(project);
 
-            _projectRepository.Add(memString, project);
+            _projectRepository.AddMemberChange(memString, project);
 
             try
             {
@@ -114,7 +119,7 @@ namespace PIMBackend.Services.Imp
                 throw new UpdateConflictException("Conflict", null);
             }
 
-            if (project.Version != projectDb.Version)
+            if (project.Version.SequenceEqual(projectDb.Version) == false)
             {
                 throw new UpdateConflictException("Conflict", null);
             }
@@ -135,10 +140,7 @@ namespace PIMBackend.Services.Imp
                 projectDb.StartDate = project.StartDate;
                 projectDb.EndDate = project.EndDate;
 
-                projectDb.Version += 1;
-
-                _projectRepository.Update(memString, projectDb);
-                
+                _projectRepository.UpdateMemberChange(memString, projectDb);
             }
 
             try

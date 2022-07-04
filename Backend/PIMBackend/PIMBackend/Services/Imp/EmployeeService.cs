@@ -35,25 +35,24 @@ namespace PIMBackend.Services.Imp
         // it type used to be Employee
         public void Create(Employee employee)
         {
-            if (Get(employee.Id) != null)
-            {
-                throw new IdAlreadyExistException("Employee exists: ", employee.Id);
-            }
+            //if (Get(employee.Id) != null)
+            //{
+            //    throw new IdAlreadyExistException("Employee exists: ", employee.Id);
+            //}
 
-            else
-            {
-                employee.Version = 0;
-                _employeeRepository.Add(employee);
+            //else
+            //{
+            _employeeRepository.Add(employee);
 
-                try
-                {
-                    _employeeRepository.SaveChange();
-                }
-                catch (DbUpdateConcurrencyException e)
-                {
-                    throw new UpdateConflictException("Conflict in create.", e);
-                }
+            try
+            {
+                _employeeRepository.SaveChange();
             }
+            catch (DbUpdateConcurrencyException e)
+            {
+                throw new UpdateConflictException("Conflict in create.", e);
+            }
+            //}
         }
 
         public Employee Update(Employee employee)
@@ -64,7 +63,7 @@ namespace PIMBackend.Services.Imp
                 throw new IdNotExistException();
             }
 
-            if (employee.Version != employeeDb.Version)
+            if (employee.Version.SequenceEqual(employeeDb.Version) == false)
             {
                 throw new UpdateConflictException("Conflict in update.", null);
             }
@@ -75,7 +74,6 @@ namespace PIMBackend.Services.Imp
                 employeeDb.FirstName = employee.FirstName;
                 employeeDb.LastName = employee.LastName;
                 employeeDb.BirthDate = employee.BirthDate;
-                employeeDb.Version += 1;
             }
 
             try

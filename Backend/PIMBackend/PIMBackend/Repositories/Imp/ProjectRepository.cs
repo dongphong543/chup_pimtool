@@ -24,7 +24,7 @@ namespace PIMBackend.Repositories.Imp
             return Set.Any<Project>(p => p.ProjectNumber == pjNum);
         }
 
-        public void Add(string memString, Project project)
+        public void AddMemberChange(string memString, Project project)
         {
             if (string.IsNullOrEmpty(memString) == false)
             {
@@ -47,7 +47,7 @@ namespace PIMBackend.Repositories.Imp
             Set.Add(project);
         }
 
-        public void Update(string memString, Project projectDb)
+        public void UpdateMemberChange(string memString, Project projectDb)
         {
             if (string.IsNullOrEmpty(memString) == false)
             {
@@ -69,7 +69,6 @@ namespace PIMBackend.Repositories.Imp
                 }
             }
             
-
             Set.Update(projectDb);
 
         }

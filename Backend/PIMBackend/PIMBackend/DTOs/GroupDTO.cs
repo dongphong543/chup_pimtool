@@ -11,7 +11,7 @@ namespace PIMBackend.DTOs
     {
         public decimal Id { get; set; }
         public decimal GroupLeaderId { get; set; }
-        public decimal Version { get; set; }
+        public byte[] Version { get; set; }
 
         public virtual EmployeeDTO GroupLeader { get; set; }
 

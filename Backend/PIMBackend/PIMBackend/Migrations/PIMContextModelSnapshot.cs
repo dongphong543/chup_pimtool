@@ -60,8 +60,10 @@ namespace PIMBackend.Migrations
                         .HasColumnType("varchar(50)")
                         .HasColumnName("LAST_NAME");
 
-                    b.Property<decimal>("Version")
-                        .HasColumnType("numeric(10,0)")
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion")
                         .HasColumnName("VERSION");
 
                     b.Property<string>("Visa")
@@ -89,8 +91,10 @@ namespace PIMBackend.Migrations
                         .HasColumnType("numeric(19,0)")
                         .HasColumnName("GROUP_LEADER_ID");
 
-                    b.Property<decimal>("Version")
-                        .HasColumnType("numeric(10,0)")
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion")
                         .HasColumnName("VERSION");
 
                     b.HasKey("Id");
@@ -147,8 +151,10 @@ namespace PIMBackend.Migrations
                         .HasColumnName("STATUS")
                         .IsFixedLength(true);
 
-                    b.Property<decimal>("Version")
-                        .HasColumnType("numeric(10,0)")
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion")
                         .HasColumnName("VERSION");
 
                     b.HasKey("Id");

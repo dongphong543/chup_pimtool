@@ -17,7 +17,7 @@ namespace PIMBackend.DTOs
         public string Status { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public decimal Version { get; set; }
+        public byte[] Version { get; set; }
 
         public virtual ICollection<EmployeeDTO> Employees { get; set; }
 

@@ -1,5 +1,3 @@
-
-
 <div style="width: 87.5%; margin-left: 10%">
   <form
     [formGroup]="newProjectForm"
@@ -17,18 +15,18 @@
       >
         <div>
           <div class="row border-bottom margin-bottom">
-            <span *ngIf="!nowInEditMode" class="gray-title">
-              {{ "new-project" | translate }}
-            </span>
-            <span *ngIf="nowInEditMode" class="gray-title">
-              {{ "edit-project-information" | translate }}
+            <span class="gray-title">
+              {{
+                (nowInEditMode ? "edit-project-information" : "new-project")
+                  | translate
+              }}
             </span>
           </div>
 
           <div
             class="row alert alert-danger"
             role="alert"
-            *ngIf="newProjectForm.invalid && isSubmitted"
+            *ngIf="newProjectForm.invalid && isSubmitButtonPressed"
           >
             <strong>{{ "missing-field" | translate }}</strong>
           </div>
@@ -42,7 +40,9 @@
               formControlName="pjNum"
               [ngStyle]="{
                 'border-color':
-                  newProjectForm.get('pjNum').invalid && isSubmitted ? 'red' : ''
+                  newProjectForm.get('pjNum').invalid && isSubmitButtonPressed
+                    ? 'red'
+                    : ''
               }"
               autofocus
               min="1"
@@ -52,7 +52,8 @@
             <div
               class="custom-alert-after-input"
               *ngIf="
-                newProjectForm.get('pjNum').errors?.existPjNumError && isSubmitted
+                newProjectForm.get('pjNum').errors?.existPjNumError &&
+                isSubmitButtonPressed
               "
             >
               {{ "pj-num-error" | translate }}
@@ -67,7 +68,9 @@
               formControlName="name"
               [ngStyle]="{
                 'border-color':
-                  newProjectForm.get('name').invalid && isSubmitted ? 'red' : ''
+                  newProjectForm.get('name').invalid && isSubmitButtonPressed
+                    ? 'red'
+                    : ''
               }"
             />
           </div>
@@ -80,7 +83,10 @@
               formControlName="customer"
               [ngStyle]="{
                 'border-color':
-                  newProjectForm.get('customer').invalid && isSubmitted ? 'red' : ''
+                  newProjectForm.get('customer').invalid &&
+                  isSubmitButtonPressed
+                    ? 'red'
+                    : ''
               }"
             />
           </div>
@@ -93,7 +99,9 @@
               formControlName="group"
               [ngStyle]="{
                 'border-color':
-                  newProjectForm.get('group').invalid && isSubmitted ? 'red' : ''
+                  newProjectForm.get('group').invalid && isSubmitButtonPressed
+                    ? 'red'
+                    : ''
               }"
             >
               <option
@@ -112,14 +120,18 @@
               formControlName="member"
               [ngStyle]="{
                 'border-color':
-                  newProjectForm.get('member').invalid && isSubmitted ? 'red' : ''
+                  newProjectForm.get('member').invalid && isSubmitButtonPressed
+                    ? 'red'
+                    : ''
               }"
               list="members"
             />
 
             <div
               class="custom-alert-after-input"
-              *ngIf="newProjectForm.get('member').invalid && isSubmitted"
+              *ngIf="
+                newProjectForm.get('member').invalid && isSubmitButtonPressed
+              "
             >
               {{ "pj-mem-error" | translate }} {{ nonExistEmployees$ | async }}
             </div>
@@ -133,7 +145,9 @@
               formControlName="status"
               [ngStyle]="{
                 'border-color':
-                  newProjectForm.get('status').invalid && isSubmitted ? 'red' : ''
+                  newProjectForm.get('status').invalid && isSubmitButtonPressed
+                    ? 'red'
+                    : ''
               }"
             >
               <option *ngFor="let st of statuses" [value]="st.code">
@@ -152,7 +166,10 @@
                 formControlName="startDate"
                 [ngStyle]="{
                   'border-color':
-                    newProjectForm.get('startDate').invalid && isSubmitted ? 'red' : ''
+                    newProjectForm.get('startDate').invalid &&
+                    isSubmitButtonPressed
+                      ? 'red'
+                      : ''
                 }"
               />
 
@@ -162,7 +179,9 @@
                   class="short-nps-input"
                   [ngStyle]="{
                     'border-color':
-                      newProjectForm.errors?.dateError && isSubmitted ? 'red' : ''
+                      newProjectForm.errors?.dateError && isSubmitButtonPressed
+                        ? 'red'
+                        : ''
                   }"
                   style="position: relative; margin-left: -140px"
                   type="date"
@@ -172,7 +191,7 @@
             </span>
             <div
               class="custom-alert-after-input"
-              *ngIf="newProjectForm.errors?.dateError && isSubmitted"
+              *ngIf="newProjectForm.errors?.dateError && isSubmitButtonPressed"
             >
               {{ "pj-date-error" | translate }}
             </div>
@@ -190,20 +209,8 @@
         {{ "cancel" | translate }}
       </button>
 
-      <button
-        *ngIf="nowInEditMode == false"
-        class="btn-grad bottom-button-right"
-        type="submit"
-      >
-        {{ "create-project" | translate }}
-      </button>
-
-      <button
-        *ngIf="nowInEditMode == true"
-        class="btn-grad bottom-button-right"
-        type="submit"
-      >
-        {{ "edit-project" | translate }}
+      <button class="btn-grad bottom-button-right" type="submit">
+        {{ (nowInEditMode ? "edit-project" : "create-project") | translate }}
       </button>
     </div>
   </form>

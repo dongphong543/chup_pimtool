@@ -7,6 +7,7 @@
         alt="Italian Trulli"
       />
     </div>
+
     <div class="col-8 error-text">
       <div>{{ "error-screen-line1" | translate }}</div>
       <div class="error-message">
@@ -26,6 +27,15 @@
         <span class="error-text-red">
           {{ "error-screen-line2.2" | translate }}
         </span>
+        <!-- 
+          <div
+              [innerHTML]="
+                    'error-screen-line2' | translate: { classname: 'error-text-red' }
+              "
+          > -->
+
+        <!-- Put the following to en.json to make it run: -->
+        <!-- "error-screen-line2": "<span>Please </span><span style={{classname}}>contact your administrator.</span>", -->
       </div>
       <div>
         <span>

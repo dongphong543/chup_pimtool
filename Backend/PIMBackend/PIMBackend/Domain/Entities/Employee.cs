@@ -20,7 +20,7 @@ namespace PIMBackend.Domain.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime BirthDate { get; set; }
-        public decimal Version { get; set; }
+        public byte[] Version { get; set; }
 
         public virtual Group Group { get; set; }
         public virtual ICollection<Project> Projects { get; set; }

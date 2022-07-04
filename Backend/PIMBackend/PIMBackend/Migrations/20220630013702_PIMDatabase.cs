@@ -17,7 +17,7 @@ namespace PIMBackend.Migrations
                     FIRST_NAME = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
                     LAST_NAME = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
                     BIRTH_DATE = table.Column<DateTime>(type: "date", nullable: false),
-                    VERSION = table.Column<decimal>(type: "numeric(10,0)", nullable: false)
+                    VERSION = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -31,7 +31,7 @@ namespace PIMBackend.Migrations
                     ID = table.Column<decimal>(type: "numeric(19,0)", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     GROUP_LEADER_ID = table.Column<decimal>(type: "numeric(19,0)", nullable: false),
-                    VERSION = table.Column<decimal>(type: "numeric(10,0)", nullable: false)
+                    VERSION = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -56,7 +56,7 @@ namespace PIMBackend.Migrations
                     STATUS = table.Column<string>(type: "char(3)", unicode: false, fixedLength: true, maxLength: 3, nullable: false),
                     START_DATE = table.Column<DateTime>(type: "date", nullable: false),
                     END_DATE = table.Column<DateTime>(type: "date", nullable: true),
-                    VERSION = table.Column<decimal>(type: "numeric(10,0)", nullable: false)
+                    VERSION = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {

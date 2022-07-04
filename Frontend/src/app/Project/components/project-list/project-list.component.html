@@ -11,7 +11,7 @@
 
       <span style="margin-left: -15px">
         <span>
-          <form [formGroup]="searchForm" (ngSubmit)="searchProject()">
+          <form [formGroup]="searchForm">
             <input
               class="text-input"
               type="text"
@@ -30,12 +30,9 @@
               {{ "search-project" | translate }}
             </button>
 
-            <input
-              class="link-small-blue"
-              type="reset"
-              value="{{ 'reset-search' | translate }}"
-              (click)="resetProject()"
-            />
+            <button class="link-small-blue" (click)="resetProject()">
+              {{ "reset-search" | translate }}
+            </button>
           </form>
         </span>
 
@@ -45,17 +42,44 @@
               <tr>
                 <th scope="col" style="width: 4%"></th>
                 <th scope="col" style="width: 7%">
-                  {{ "number" | translate }}
+                  <button
+                    class="table-sort-button"
+                    (click)="onPressSortingHeader('P')"
+                  >
+                    {{ "number" | translate }}
+                  </button>
                 </th>
-                <th scope="col" style="width: 31%">{{ "name" | translate }}</th>
+                <th scope="col" style="width: 31%">
+                  <button
+                    class="table-sort-button"
+                    (click)="onPressSortingHeader('N')"
+                  >
+                    {{ "name" | translate }}
+                  </button>
+                </th>
                 <th scope="col" style="width: 14%">
-                  {{ "status" | translate }}
+                  <button
+                    class="table-sort-button"
+                    (click)="onPressSortingHeader('S')"
+                  >
+                    {{ "status" | translate }}
+                  </button>
                 </th>
                 <th scope="col" style="width: 22%">
-                  {{ "customer" | translate }}
+                  <button
+                    class="table-sort-button"
+                    (click)="onPressSortingHeader('C')"
+                  >
+                    {{ "customer" | translate }}
+                  </button>
                 </th>
                 <th scope="col" style="width: 16%">
-                  {{ "start-date" | translate }}
+                  <button
+                    class="table-sort-button"
+                    (click)="onPressSortingHeader('D')"
+                  >
+                    {{ "start-date" | translate }}
+                  </button>
                 </th>
                 <th scope="col" style="width: 6%">
                   {{ "delete" | translate }}
@@ -63,13 +87,19 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let pj of projects$ | async">
+              <tr
+                *ngFor="
+                  let pj of projects$ | async | paginate: paginationConfig
+                "
+              >
                 <td>
                   <input
                     type="checkbox"
                     style="width: 15px; height: 15px"
                     id="{{ pj.projectNumber }}checkbox"
-                    (change)="changedCheckbox(pj.projectNumber, $event.target.checked)"
+                    (change)="
+                      changedCheckbox(pj.projectNumber, $event.target.checked)
+                    "
                   />
                 </td>
                 <td>
@@ -125,16 +155,38 @@
             </button>
           </div>
         </div>
-
-        <div class="pagination">
-          <a href="">&laquo;</a>
-          <a class="active" href="#">1</a>
-          <a href="#">2</a>
-          <a href="#">3</a>
-          <a href="#">4</a>
-          <a href="#">&raquo;</a>
-        </div>
       </span>
+      <!-- <nav aria-label="...">
+        <ul class="pagination justify-content-end">
+          <li class="page-item disabled">
+            <span class="page-link"> &#171; </span>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item active">
+            <span class="page-link">
+              2
+              <span class="sr-only">(current)</span>
+            </span>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#">&#187;</a>
+          </li>
+        </ul>
+      </nav> -->
+      <!-- <div class="card-footer pb-0 pt-3">
+        <jw-pagination [items]="items" (changePage)="onChangePage($event)" [pageSize]="pageSize"></jw-pagination>
+      </div> -->
+      <div class="has-text-centered pagination">
+        <pagination-controls
+          [id]="paginationConfig.id"
+          [maxSize]="maxPageNumber"
+          nextLabel=""
+          previousLabel=""
+          (pageChange)="onPageChange($event)"
+        >
+        </pagination-controls>
+      </div>
     </div>
   </div>
 </div>
