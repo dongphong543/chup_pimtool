@@ -82,6 +82,7 @@ export class NPSComponent implements OnInit {
             Validators.pattern("^[0-9]*$"),
           ],
           [existPjNumValidator(this.service)]
+          // []
         ),
         name: new FormControl("", [
           Validators.required,

@@ -46,7 +46,7 @@ namespace PIMBackend.Controllers
                                                    .Get(searchText, searchStatus));
 
             // Check pagination
-            if (pageIndex + 1 > Math.Ceiling(ret.Count() / (decimal)pageSize))
+            if (pageIndex + 1 > Math.Ceiling(ret.Count() / (decimal)pageSize) && Math.Ceiling(ret.Count() / (decimal)pageSize) != 0)
             {
                 throw new PageInvalidException("Page number invalid.", pageIndex + 1);
             }

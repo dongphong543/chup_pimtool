@@ -95,9 +95,9 @@ namespace PIMBackend.Services.Imp
             }
 
             ValidateForm(project);
-
+            
             _projectRepository.AddMemberChange(memString, project);
-
+            //throw new Exception(project.Version.ToString());
             try
             {
                 _projectRepository.SaveChange();
@@ -106,7 +106,7 @@ namespace PIMBackend.Services.Imp
             {
                 throw new UpdateConflictException("Conflict in create.", e);
             }
-            
+
         }
 
         public Project Update(Project project, string memString)

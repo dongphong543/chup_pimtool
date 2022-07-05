@@ -9,7 +9,7 @@ namespace PIMBackend.Test
     public abstract class BaseTest
     {
         //protected IContainer Container;
-        //protected PIMContext Context;
+        protected PIMContext Context;
 
         //[OneTimeSetUp]
         //public void OneTimeSetUp()
