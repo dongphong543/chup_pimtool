@@ -1,0 +1,192 @@
+<div style="width: 80%; margin-left: 10%">
+  <div class="row" style="margin-top: -15px">
+    <div class="col-2 border-right">
+      <sidebar screenName="project-name"></sidebar>
+    </div>
+
+    <div class="col-9" style="margin-top: 50px; margin-left: 50px">
+      <div class="row border-bottom">
+        <span class="gray-title">{{ "projects-list" | translate }}</span>
+      </div>
+
+      <span style="margin-left: -15px">
+        <span>
+          <form [formGroup]="searchForm">
+            <input
+              class="text-input"
+              type="text"
+              formControlName="searchText"
+              placeholder="{{ 'search-placeholder' | translate }}"
+            />
+            <select class="dropdown-box" formControlName="searchStatus">
+              <option value=""></option>
+              <option value="NEW">{{ "New" | translate }}</option>
+              <option value="PLA">{{ "Planned" | translate }}</option>
+              <option value="INP">{{ "In progress" | translate }}</option>
+              <option value="FIN">{{ "Finished" | translate }}</option>
+            </select>
+
+            <button class="btn-grad" (click)="searchProject()">
+              {{ "search-project" | translate }}
+            </button>
+
+            <button class="link-small-blue" (click)="resetProject()">
+              {{ "reset-search" | translate }}
+            </button>
+          </form>
+        </span>
+
+        <div style="background-color: white; margin-left: -15px">
+          <table class="table table-bordered border-bottom">
+            <thead class="thead-white" style="height: 32px">
+              <tr>
+                <th scope="col" style="width: 4%"></th>
+                <th scope="col" style="width: 7%">
+                  <button
+                    class="table-sort-button"
+                    (click)="onPressSortingHeader('P')"
+                  >
+                    {{ "number" | translate }}
+                  </button>
+                </th>
+                <th scope="col" style="width: 31%">
+                  <button
+                    class="table-sort-button"
+                    (click)="onPressSortingHeader('N')"
+                  >
+                    {{ "name" | translate }}
+                  </button>
+                </th>
+                <th scope="col" style="width: 14%">
+                  <button
+                    class="table-sort-button"
+                    (click)="onPressSortingHeader('S')"
+                  >
+                    {{ "status" | translate }}
+                  </button>
+                </th>
+                <th scope="col" style="width: 22%">
+                  <button
+                    class="table-sort-button"
+                    (click)="onPressSortingHeader('C')"
+                  >
+                    {{ "customer" | translate }}
+                  </button>
+                </th>
+                <th scope="col" style="width: 16%">
+                  <button
+                    class="table-sort-button"
+                    (click)="onPressSortingHeader('D')"
+                  >
+                    {{ "start-date" | translate }}
+                  </button>
+                </th>
+                <th scope="col" style="width: 6%">
+                  {{ "delete" | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let pj of projects$ | async | paginate: paginationConfig
+                "
+              >
+                <td>
+                  <input
+                    type="checkbox"
+                    style="width: 15px; height: 15px"
+                    id="{{ pj.projectNumber }}checkbox"
+                    (change)="
+                      changedCheckbox(pj.projectNumber, $event.target.checked)
+                    "
+                  />
+                </td>
+                <td>
+                  <a
+                    routerLink="/pim/edit/{{ pj.projectNumber }}"
+                    style="color: #666666"
+                    >{{ pj.projectNumber }}</a
+                  >
+                </td>
+                <td>{{ pj.name }}</td>
+                <td>{{ pj.status | statusPipe | translate }}</td>
+                <td>{{ pj.customer }}</td>
+                <td>{{ pj.startDate | date: "dd.MM.yyyy" }}</td>
+                <td>
+                  <button
+                    class="delete-column-button"
+                    *ngIf="pj.status == 'NEW'"
+                    (click)="deleteProject(pj.projectNumber)"
+                  >
+                    <span class="material-icons"> delete </span>
+                  </button>
+                </td>
+              </tr>
+              <span></span>
+            </tbody>
+          </table>
+
+          <div class="n-item-selected border" *ngIf="checkedPjNum.length > 1">
+            {{ "n-items-selected" | translate: { n: checkedPjNum.length } }}
+            <button class="delete-select-item" (click)="deleteCheckedProject()">
+              <div>
+                <span style="padding-right: 10px">
+                  {{ "delete-selected-items" | translate }}
+                </span>
+                <span class="material-icons" style="position: absolute">
+                  delete
+                </span>
+              </div>
+            </button>
+          </div>
+
+          <div class="n-item-selected border" *ngIf="checkedPjNum.length == 1">
+            {{ "1-item-selected" | translate: { n: checkedPjNum.length } }}
+            <button class="delete-select-item" (click)="deleteCheckedProject()">
+              <div>
+                <span style="padding-right: 10px">
+                  {{ "delete-selected-item" | translate }}
+                </span>
+                <span class="material-icons" style="position: absolute">
+                  delete
+                </span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </span>
+      <!-- <nav aria-label="...">
+        <ul class="pagination justify-content-end">
+          <li class="page-item disabled">
+            <span class="page-link"> &#171; </span>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item active">
+            <span class="page-link">
+              2
+              <span class="sr-only">(current)</span>
+            </span>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#">&#187;</a>
+          </li>
+        </ul>
+      </nav> -->
+      <!-- <div class="card-footer pb-0 pt-3">
+        <jw-pagination [items]="items" (changePage)="onChangePage($event)" [pageSize]="pageSize"></jw-pagination>
+      </div> -->
+      <div class="has-text-centered pagination">
+        <pagination-controls
+          [id]="paginationConfig.id"
+          [maxSize]="maxPageNumber"
+          nextLabel=""
+          previousLabel=""
+          (pageChange)="onPageChange($event)"
+        >
+        </pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>

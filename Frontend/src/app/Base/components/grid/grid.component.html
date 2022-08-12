@@ -1,0 +1,34 @@
+
+<table class="table table-bordered border-bottom">
+  <thead class="thead-white" style="height: 32px">
+    <tr>
+      <th scope="col" style="width: 4%"></th>
+      <th scope="col" style="width: 7%">Number</th>
+      <th scope="col" style="width: 32%">Name</th>
+      <th scope="col" style="width: 14%">Status</th>
+      <th scope="col" style="width: 20%">Customer</th>
+      <th scope="col" style="width: 17%">Start Date</th>
+      <th scope="col" style="width: 6%">Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr *ngFor="let pj of projects" [id]="pj.projectNumber">
+      <td>
+        <input type="checkbox" style="width: 15px; height: 15px" />
+      </td>
+      <td>{{ pj.projectNumber }}</td>
+      <td>{{ pj.name }}</td>
+      <td>{{ pj.status }}</td>
+      <td>{{ pj.customer }}</td>
+      <td>{{ pj.startDate }}</td>
+      <td>
+        <button class="delete-column-button">
+          <span class="material-icons"> delete </span>
+        </button>
+      </td>
+    </tr>
+
+    
+  </tbody>
+</table>

@@ -1,0 +1,35 @@
+@import "src/styles/variables";
+
+th {
+    font-size: 14pt;
+    font-family: "Segoe UI";
+    font-weight: 400;
+    color: $pim-gray6;
+  }
+
+  td {
+    font-size: 14pt;
+    font-family: "Segoe UI";
+    font-weight: 600;
+    color: $pim-gray6;
+  }
+
+  table td:nth-child(1) {
+    text-align: center;
+  }
+
+  table td:nth-child(2) {
+    text-align: end;
+  }
+
+  table td:nth-child(7) {
+    text-align: center;
+    color: rgb(204, 5, 5);
+  }
+
+  .delete-column-button {
+    background-color: transparent;
+    outline: transparent;
+    border: transparent;
+    color: rgb(223, 26, 26);
+  }

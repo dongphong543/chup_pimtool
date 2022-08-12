@@ -1,0 +1,217 @@
+<div style="width: 87.5%; margin-left: 10%">
+  <form
+    [formGroup]="newProjectForm"
+    (ngSubmit)="onSubmit()"
+    (click)="setSubmittedFalse()"
+  >
+    <div class="row" style="margin-top: -15px; margin-bottom: 30px">
+      <div class="col-2 border-right">
+        <sidebar></sidebar>
+      </div>
+
+      <div
+        class="col-7 border-bottom"
+        style="margin-top: 50px; margin-left: 50px"
+      >
+        <div>
+          <div class="row border-bottom margin-bottom">
+            <span class="gray-title">
+              {{
+                (nowInEditMode ? "edit-project-information" : "new-project")
+                  | translate
+              }}
+            </span>
+          </div>
+
+          <div
+            class="row alert alert-danger"
+            role="alert"
+            *ngIf="newProjectForm.invalid && isSubmitButtonPressed"
+          >
+            <strong>{{ "missing-field" | translate }}</strong>
+          </div>
+
+          <div class="first-row new-project-row">
+            <span class="label">{{ "project-number" | translate }} </span>
+            <span class="red">*</span>
+            <input
+              class="short-nps-input"
+              type="number"
+              formControlName="pjNum"
+              [ngStyle]="{
+                'border-color':
+                  newProjectForm.get('pjNum').invalid && isSubmitButtonPressed
+                    ? 'red'
+                    : ''
+              }"
+              autofocus
+              min="1"
+              max="9999"
+            />
+
+            <div
+              class="custom-alert-after-input"
+              *ngIf="
+                newProjectForm.get('pjNum').errors?.existPjNumError &&
+                isSubmitButtonPressed
+              "
+            >
+              {{ "pj-num-error" | translate }}
+            </div>
+          </div>
+
+          <div class="new-project-row">
+            <span class="label">{{ "project-name" | translate }} </span>
+            <span class="red">*</span>
+            <input
+              class="long-nps-input"
+              formControlName="name"
+              [ngStyle]="{
+                'border-color':
+                  newProjectForm.get('name').invalid && isSubmitButtonPressed
+                    ? 'red'
+                    : ''
+              }"
+            />
+          </div>
+
+          <div class="new-project-row">
+            <span class="label">{{ "customer" | translate }} </span>
+            <span class="red">*</span>
+            <input
+              class="long-nps-input"
+              formControlName="customer"
+              [ngStyle]="{
+                'border-color':
+                  newProjectForm.get('customer').invalid &&
+                  isSubmitButtonPressed
+                    ? 'red'
+                    : ''
+              }"
+            />
+          </div>
+
+          <div class="new-project-row">
+            <span class="label">{{ "group" | translate }} </span>
+            <span class="red">*</span>
+            <select
+              class="dropdown-box short-nps-select"
+              formControlName="group"
+              [ngStyle]="{
+                'border-color':
+                  newProjectForm.get('group').invalid && isSubmitButtonPressed
+                    ? 'red'
+                    : ''
+              }"
+            >
+              <option
+                *ngFor="let pjL of projectLeaderName$ | async"
+                [value]="pjL.id"
+              >
+                {{ pjL.fullName }}
+              </option>
+            </select>
+          </div>
+
+          <div class="new-project-row">
+            <span>{{ "member" | translate }} </span>
+            <input
+              class="long-nps-input"
+              formControlName="member"
+              [ngStyle]="{
+                'border-color':
+                  newProjectForm.get('member').invalid && isSubmitButtonPressed
+                    ? 'red'
+                    : ''
+              }"
+              list="members"
+            />
+
+            <div
+              class="custom-alert-after-input"
+              *ngIf="
+                newProjectForm.get('member').invalid && isSubmitButtonPressed
+              "
+            >
+              {{ "pj-mem-error" | translate }} {{ nonExistEmployees$ | async }}
+            </div>
+          </div>
+
+          <div class="new-project-row">
+            <span class="label">{{ "status" | translate }} </span>
+            <span class="red">*</span>
+            <select
+              class="dropdown-box short-nps-select"
+              formControlName="status"
+              [ngStyle]="{
+                'border-color':
+                  newProjectForm.get('status').invalid && isSubmitButtonPressed
+                    ? 'red'
+                    : ''
+              }"
+            >
+              <option *ngFor="let st of statuses" [value]="st.code">
+                {{ st.name | translate }}
+              </option>
+            </select>
+          </div>
+
+          <div class="new-project-row relative last-row-margin-bottom">
+            <span>
+              <span class="label">{{ "start-date" | translate }} </span>
+              <span class="red">*</span>
+              <input
+                class="short-nps-input"
+                type="date"
+                formControlName="startDate"
+                [ngStyle]="{
+                  'border-color':
+                    newProjectForm.get('startDate').invalid &&
+                    isSubmitButtonPressed
+                      ? 'red'
+                      : ''
+                }"
+              />
+
+              <span class="second-input" style="margin-left: 410px">
+                <span>{{ "end-date" | translate }} </span>
+                <input
+                  class="short-nps-input"
+                  [ngStyle]="{
+                    'border-color':
+                      newProjectForm.errors?.dateError && isSubmitButtonPressed
+                        ? 'red'
+                        : ''
+                  }"
+                  style="position: relative; margin-left: -140px"
+                  type="date"
+                  formControlName="endDate"
+                />
+              </span>
+            </span>
+            <div
+              class="custom-alert-after-input"
+              *ngIf="newProjectForm.errors?.dateError && isSubmitButtonPressed"
+            >
+              {{ "pj-date-error" | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row button-row">
+      <button
+        class="btn-grad bottom-next-button-right"
+        type="button"
+        (click)="onCancel()"
+      >
+        {{ "cancel" | translate }}
+      </button>
+
+      <button class="btn-grad bottom-button-right" type="submit">
+        {{ (nowInEditMode ? "edit-project" : "create-project") | translate }}
+      </button>
+    </div>
+  </form>
+</div>

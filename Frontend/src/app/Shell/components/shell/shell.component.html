@@ -1,0 +1,37 @@
+<div class="titleContent">
+  <a routerLink="/">
+    <img src="assets/img/logo_elca.png" />
+  </a>
+
+  <!-- <span id="titleText" i18n> Project Information Management </span> -->
+  <span class="titleText"> {{ "app-title" | translate }} </span>
+
+  <span class="link-small-blue lang-region">
+    <button
+      class="link-small-blue"
+      (click)="setLanguage('en')"
+      [ngClass]="{'selected-language': isEn == true}"
+    >
+      EN
+    </button>
+    <span style="color: #333333"> | </span>
+    <button
+      class="link-small-blue"
+      (click)="setLanguage('fr')"
+      [ngClass]="{'selected-language': isEn == false}"
+    >
+      FR
+    </button>
+  </span>
+
+  <span class="get-right">
+    <button class="link-small-blue">{{ "help" | translate }}</button>
+    <button class="link-small-gray logout-button">
+      {{ "log-out" | translate }}
+    </button>
+  </span>
+</div>
+
+<hr class="fullHLine" />
+
+<router-outlet></router-outlet>

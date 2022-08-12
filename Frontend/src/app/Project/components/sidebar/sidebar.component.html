@@ -1,0 +1,29 @@
+<div id="sidebar">
+  <button
+    class="link-big"
+    type="button"
+    routerLink="/pim/list"
+    routerLinkActive="active-link"
+  >
+    {{ "projects-list" | translate }}
+  </button>
+</div>
+<div>
+  <span class="link-button">{{ "New" | translate }}</span>
+</div>
+<div>
+  <button
+    class="link-small-gray"
+    type="button"
+    routerLink="/pim/new"
+    routerLinkActive="active-link"
+  >
+    {{ "project" | translate }}
+  </button>
+</div>
+<div>
+  <button class="link-small-gray" disabled>{{ "customer" | translate }}</button>
+</div>
+<div>
+  <button class="link-small-gray" disabled>{{ "supplier" | translate }}</button>
+</div>

@@ -1,0 +1,36 @@
+@import "src/styles/variables";
+
+.red-cross {
+  width: 80%;
+}
+
+.error-div {
+  margin-left: 25%;
+  margin-right: 25%;
+  margin-top: 10%;
+}
+
+.error-text {
+  font-size: 22pt;
+  font-weight: 600;
+  color: $pim-gray6;
+}
+
+.error-message {
+  font-size: 14pt;
+}
+
+.error-text-red {
+  color: #be4040;
+}
+
+.error-text-blue {
+  color: $pim-blue;
+}
+
+.transparent {
+  background-color: transparent;
+  border: transparent;
+  outline: transparent;
+  font-weight: 600;
+}

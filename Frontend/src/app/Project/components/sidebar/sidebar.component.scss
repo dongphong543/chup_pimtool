@@ -1,0 +1,10 @@
+@import "src/styles/variables";
+
+.link-small-gray {
+  margin-top: 10px;
+}
+
+.active-link {
+  color: $pim-gray3;
+  font-weight: 600;
+}

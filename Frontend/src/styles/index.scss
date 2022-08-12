@@ -1,0 +1,87 @@
+/* You can add global styles to this file, and also import other style files */
+@import "./bootstrap";
+
+
+html,
+body {
+  background-color: $pim-background-color;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+button.link-small-gray {
+  background: none;
+  border: none;
+  outline: none;
+  margin-top: 0px;
+  color: $pim-gray6;
+  font-weight: 400;
+  font-size: 14pt;
+  font-family: "Segoe UI";
+}
+
+.link-small-blue {
+  background: none;
+  border: none;
+  outline: none;
+  margin-top: 0px;
+  color: $pim-blue;
+  font-weight: 600;
+  font-size: 14pt;
+  font-family: "Segoe UI";
+}
+
+button.link-big {
+  background: none;
+  border: none;
+  outline: none;
+  margin-top: 50px;
+  margin-bottom: 20px;
+  color: $pim-blue;
+  font-weight: 600;
+  font-size: 18pt;
+  font-family: "Segoe UI";
+}
+
+.link-button {
+  margin-left: 6px;
+  margin-top: 20px;
+  color: $pim-blue;
+  font-weight: 600;
+  font-size: 18pt;
+  font-family: "Segoe UI";
+}
+
+.btn-grad {
+  background-color: $pim-blue;
+  margin-right: 40px;
+  margin-left: 40px;
+  width: 225px;
+  text-align: center;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
+  border-radius: 5px;
+  border-width: 0px;
+  height: 35px;
+  font-size: 14pt;
+  font-weight: 600;
+}
+
+.btn-grad:hover {
+  background-position: right center; /* change the direction of the change here */
+  color: #fff;
+  text-decoration: none;
+}
+
+.btn-grad:focus {
+  color: white;
+}
+
+.table-bordered > tbody > tr > td,
+.table-bordered > thead > tr > td,
+.table-bordered {
+  border-bottom: 0;
+  border-top: 0;
+}
